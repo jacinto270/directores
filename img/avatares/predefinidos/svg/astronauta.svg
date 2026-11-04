@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#c9bdf2"/>
+  <!-- estrellas y planeta -->
+  <circle cx="54" cy="60" r="4" fill="#fff"/>
+  <circle cx="96" cy="120" r="3" fill="#fff"/>
+  <circle cx="352" cy="300" r="4" fill="#fff"/>
+  <circle cx="44" cy="300" r="3" fill="#fff"/>
+  <path d="M330 40 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 l12 -5 z" fill="#fff6d6"/>
+  <circle cx="340" cy="150" r="26" fill="#ffd9c7"/>
+  <ellipse cx="340" cy="150" rx="44" ry="10" fill="none" stroke="#f49ab8" stroke-width="5" transform="rotate(-20 340 150)"/>
+  <!-- traje -->
+  <path d="M96 400 Q100 308 200 300 Q300 308 304 400 Z" fill="#fff" stroke="#9a92c4" stroke-width="6"/>
+  <rect x="166" y="334" width="68" height="44" rx="8" fill="#e6defa" stroke="#9a92c4" stroke-width="5"/>
+  <circle cx="186" cy="356" r="7" fill="#e2546b"/>
+  <circle cx="214" cy="356" r="7" fill="#7fd1ae"/>
+  <!-- casco -->
+  <circle cx="200" cy="190" r="128" fill="#fff" stroke="#9a92c4" stroke-width="7"/>
+  <rect x="88" y="168" width="18" height="48" rx="8" fill="#e6defa" stroke="#9a92c4" stroke-width="5"/>
+  <rect x="294" y="168" width="18" height="48" rx="8" fill="#e6defa" stroke="#9a92c4" stroke-width="5"/>
+  <!-- visor -->
+  <ellipse cx="200" cy="196" rx="94" ry="84" fill="#3a3566"/>
+  <!-- cara dentro del visor -->
+  <circle cx="200" cy="206" r="62" fill="#f5c9a6"/>
+  <path d="M140 196 Q146 140 200 140 Q254 140 260 196 Q236 168 200 170 Q170 168 140 196 Z" fill="#6e3c1e"/>
+  <circle cx="178" cy="208" r="9" fill="#3d3a4b"/>
+  <circle cx="222" cy="208" r="9" fill="#3d3a4b"/>
+  <circle cx="181" cy="205" r="3" fill="#fff"/>
+  <circle cx="225" cy="205" r="3" fill="#fff"/>
+  <circle cx="164" cy="228" r="9" fill="#f49ab8" opacity=".6"/>
+  <circle cx="236" cy="228" r="9" fill="#f49ab8" opacity=".6"/>
+  <path d="M184 234 Q200 248 216 234" fill="none" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>
+  <!-- reflejo del visor -->
+  <path d="M128 168 Q140 128 186 118" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+  <circle cx="262" cy="134" r="7" fill="#fff" opacity=".55"/>
+</svg>

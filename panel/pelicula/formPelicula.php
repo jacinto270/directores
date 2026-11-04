@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../../includes/sesion.php";
+requiereLogin("../../");
 require_once __DIR__ . "/../../clases/peliculaDAO.php";
 require_once __DIR__ . "/../../clases/directorDAO.php";
 
@@ -40,6 +42,7 @@ require __DIR__ . "/../../includes/cabecera_panel.php";
     </div>
 
     <form class="tarjeta formulario" action="guardarPelicula.php" method="post" enctype="multipart/form-data">
+        <?php echo campoToken(); ?>
         <?php if ($pelicula): ?>
             <input type="hidden" name="id" value="<?php echo $pelicula->getId(); ?>">
         <?php endif; ?>

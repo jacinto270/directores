@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#ffe1d1"/>
+  <!-- olas -->
+  <path d="M0 360 q25 -18 50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 t50 0 V400 H0 Z" fill="#cbe4f6"/>
+  <!-- camisa a rayas -->
+  <path d="M100 400 Q110 312 200 304 Q290 312 300 400 Z" fill="#fff"/>
+  <path d="M112 346 H288 M104 376 H296" stroke="#4f78b0" stroke-width="12"/>
+  <!-- cara -->
+  <circle cx="200" cy="206" r="96" fill="#f5c9a6" stroke="#8a5a3c" stroke-width="5"/>
+  <!-- barba -->
+  <path d="M112 226 Q120 316 200 318 Q280 316 288 226 Q262 262 200 262 Q138 262 112 226 Z" fill="#8a4f2a"/>
+  <!-- bigote -->
+  <path d="M160 246 Q180 232 200 246 Q220 232 240 246 Q226 258 200 252 Q174 258 160 246 Z" fill="#6e3c1e"/>
+  <!-- sonrisa -->
+  <path d="M178 262 Q200 282 222 262" fill="#fff" stroke="#6e3c1e" stroke-width="4"/>
+  <!-- pañuelo -->
+  <path d="M104 186 Q110 108 200 104 Q290 108 296 186 Q250 160 200 160 Q150 160 104 186 Z" fill="#e2546b"/>
+  <circle cx="150" cy="134" r="8" fill="#fff"/>
+  <circle cx="200" cy="124" r="8" fill="#fff"/>
+  <circle cx="250" cy="134" r="8" fill="#fff"/>
+  <path d="M290 168 L340 150 L322 190 Z M292 176 L336 206 L300 210 Z" fill="#c43c55"/>
+  <!-- parche -->
+  <path d="M110 176 L290 222" stroke="#2d2a3a" stroke-width="6"/>
+  <ellipse cx="236" cy="208" rx="27" ry="24" fill="#2d2a3a"/>
+  <!-- ojo -->
+  <circle cx="160" cy="204" r="16" fill="#fff" stroke="#8a5a3c" stroke-width="4"/>
+  <circle cx="163" cy="206" r="8" fill="#3d3a4b"/>
+  <circle cx="166" cy="202" r="3" fill="#fff"/>
+  <path d="M140 182 Q160 172 180 182" fill="none" stroke="#6e3c1e" stroke-width="6" stroke-linecap="round"/>
+  <!-- pendiente -->
+  <circle cx="106" cy="236" r="12" fill="none" stroke="#e8b931" stroke-width="6"/>
+</svg>

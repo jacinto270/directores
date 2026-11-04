@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../../includes/sesion.php";
+requiereLogin("../../");
 require_once __DIR__ . "/../../clases/directorDAO.php";
 $directorDAO = new DirectorDAO();
 
@@ -25,6 +27,7 @@ require __DIR__ . "/../../includes/cabecera_panel.php";
     </div>
 
     <form class="tarjeta formulario" action="guardarDirector.php" method="post">
+        <?php echo campoToken(); ?>
         <?php if ($director): ?>
             <input type="hidden" name="id" value="<?php echo $director->getId(); ?>">
         <?php endif; ?>

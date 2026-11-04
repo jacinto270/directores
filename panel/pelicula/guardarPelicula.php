@@ -1,5 +1,9 @@
 <?php
+require_once __DIR__ . "/../../includes/sesion.php";
+requiereLogin("../../");
+verificarToken();
 require_once __DIR__ . "/../../clases/peliculaDAO.php";
+require_once __DIR__ . "/../../includes/imagenes.php";
 $dao = new PeliculasDAO();
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -30,9 +34,8 @@ function subirImagen(): ?string {
         return null;
     }
 
-    $nombre = uniqid("portada_") . "." . $permitidas[$tipo];
-    move_uploaded_file($_FILES["imagen"]["tmp_name"], __DIR__ . "/../../img/" . $nombre);
-    return $nombre;
+    //se reduce a 600x900 como maximo (sin recortar) y se guarda como WEBP
+    return guardarPortada($_FILES["imagen"]["tmp_name"], $tipo, __DIR__ . "/../../img/");
 }
 
 $imagen = subirImagen();

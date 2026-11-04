@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#e6defa"/>
+  <!-- luna y murcielago -->
+  <circle cx="330" cy="72" r="34" fill="#fff6d6"/>
+  <path d="M52 92 q14 -14 26 0 q6 -10 14 -4 q8 -6 14 4 q12 -14 26 0 q-16 2 -22 14 q-8 -6 -16 -2 q-8 -4 -16 2 q-6 -12 -26 -14z" fill="#5a4a7a"/>
+  <!-- capa con cuello alto -->
+  <path d="M60 400 L95 250 L150 300 L200 330 L250 300 L305 250 L340 400 Z" fill="#3d2f57"/>
+  <path d="M95 250 L70 160 L150 270 Z M305 250 L330 160 L250 270 Z" fill="#b2406f"/>
+  <path d="M150 300 L200 400 L250 300 L200 330 Z" fill="#f3f0f7"/>
+  <!-- cara -->
+  <ellipse cx="200" cy="200" rx="84" ry="100" fill="#f1eef8" stroke="#5a4a7a" stroke-width="5"/>
+  <!-- pelo con pico -->
+  <path d="M114 186 Q108 96 200 92 Q292 96 286 186 Q268 132 238 132 L200 178 L162 132 Q132 132 114 186 Z" fill="#2d2a3a"/>
+  <!-- orejas puntiagudas -->
+  <path d="M118 196 L92 170 L120 226 Z" fill="#f1eef8" stroke="#5a4a7a" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M282 196 L308 170 L280 226 Z" fill="#f1eef8" stroke="#5a4a7a" stroke-width="5" stroke-linejoin="round"/>
+  <!-- cejas -->
+  <path d="M146 176 Q164 162 182 174" fill="none" stroke="#2d2a3a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M218 174 Q236 162 254 176" fill="none" stroke="#2d2a3a" stroke-width="7" stroke-linecap="round"/>
+  <!-- ojos -->
+  <ellipse cx="164" cy="200" rx="15" ry="17" fill="#fff" stroke="#5a4a7a" stroke-width="4"/>
+  <ellipse cx="236" cy="200" rx="15" ry="17" fill="#fff" stroke="#5a4a7a" stroke-width="4"/>
+  <circle cx="167" cy="203" r="8" fill="#c2335f"/>
+  <circle cx="239" cy="203" r="8" fill="#c2335f"/>
+  <circle cx="170" cy="199" r="3" fill="#fff"/>
+  <circle cx="242" cy="199" r="3" fill="#fff"/>
+  <!-- mofletes -->
+  <circle cx="140" cy="236" r="12" fill="#f49ab8" opacity=".5"/>
+  <circle cx="260" cy="236" r="12" fill="#f49ab8" opacity=".5"/>
+  <!-- sonrisa con colmillos -->
+  <path d="M162 242 Q200 278 238 242" fill="#7a2a4a" stroke="#5a4a7a" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M176 248 L183 268 L190 252 Z M210 252 L217 268 L224 248 Z" fill="#fff"/>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#ebe3d6"/>
+  <!-- huellas -->
+  <g fill="#d6c7b0">
+    <ellipse cx="54" cy="330" rx="12" ry="18"/>
+    <ellipse cx="86" cy="296" rx="12" ry="18"/>
+    <ellipse cx="54" cy="250" rx="12" ry="18"/>
+  </g>
+  <!-- gabardina -->
+  <path d="M90 400 Q96 310 200 300 Q304 310 310 400 Z" fill="#c9a77c"/>
+  <path d="M200 302 L150 312 L176 372 Z M200 302 L250 312 L224 372 Z" fill="#b08d63"/>
+  <path d="M190 330 L200 400 L210 330 Z" fill="#7a2a4a"/>
+  <!-- cara -->
+  <circle cx="200" cy="214" r="86" fill="#f5d2b4" stroke="#8a5a3c" stroke-width="5"/>
+  <!-- sombrero -->
+  <ellipse cx="200" cy="150" rx="130" ry="26" fill="#6e5a48" stroke="#4d3d30" stroke-width="5"/>
+  <path d="M128 150 Q126 70 200 66 Q274 70 272 150 Z" fill="#7d6754" stroke="#4d3d30" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M200 70 Q192 92 200 112" fill="none" stroke="#4d3d30" stroke-width="5" stroke-linecap="round"/>
+  <rect x="129" y="122" width="142" height="20" fill="#3d3a4b"/>
+  <!-- ojo normal -->
+  <path d="M146 192 Q162 182 178 192" fill="none" stroke="#5a3a24" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="162" cy="212" r="9" fill="#3d3a4b"/>
+  <circle cx="165" cy="209" r="3" fill="#fff"/>
+  <!-- lupa con ojo grande -->
+  <line x1="268" y1="250" x2="318" y2="320" stroke="#7d6754" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="238" cy="212" r="44" fill="#e9f6fd" fill-opacity=".85" stroke="#4d3d30" stroke-width="9"/>
+  <circle cx="238" cy="212" r="22" fill="#fff" stroke="#8a5a3c" stroke-width="3"/>
+  <circle cx="241" cy="215" r="13" fill="#3d3a4b"/>
+  <circle cx="246" cy="208" r="5" fill="#fff"/>
+  <path d="M212 186 Q222 180 232 184" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <!-- bigote y boca -->
+  <path d="M166 260 Q184 246 200 258 Q216 246 234 260 Q216 270 200 264 Q184 270 166 260 Z" fill="#5a3a24"/>
+  <path d="M186 276 Q200 284 214 276" fill="none" stroke="#8a5a3c" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="140" cy="248" r="10" fill="#f49ab8" opacity=".5"/>
+</svg>

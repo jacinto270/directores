@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#f7efc0"/>
+  <!-- volcan y hojas -->
+  <path d="M290 400 L340 300 L360 300 L400 400 Z" fill="#e8c9a8"/>
+  <path d="M332 300 q8 -26 20 -40 q-2 22 8 40 z" fill="#f49ab8"/>
+  <path d="M0 330 Q40 300 70 340 Q40 330 30 400 H0 Z" fill="#9ed8b4"/>
+  <!-- cuello y cuerpo -->
+  <path d="M120 400 Q130 300 180 280 L260 280 Q300 320 300 400 Z" fill="#7fc79a" stroke="#3f7d58" stroke-width="6"/>
+  <circle cx="230" cy="350" r="10" fill="#5fae7d"/>
+  <circle cx="262" cy="372" r="7" fill="#5fae7d"/>
+  <!-- crestas -->
+  <path d="M146 120 L160 74 L184 112 L204 62 L226 108 L252 70 L262 118 Z" fill="#f49ab8" stroke="#c2577f" stroke-width="5" stroke-linejoin="round"/>
+  <!-- cabeza -->
+  <path d="M110 200 Q104 112 200 108 Q296 112 300 190 L330 206 Q352 220 340 252 Q324 296 250 300 L170 300 Q112 296 110 200 Z" fill="#8fd6a8" stroke="#3f7d58" stroke-width="6" stroke-linejoin="round"/>
+  <!-- manchas -->
+  <circle cx="150" cy="160" r="12" fill="#6fbd8c"/>
+  <circle cx="176" cy="138" r="7" fill="#6fbd8c"/>
+  <!-- ojos -->
+  <circle cx="190" cy="180" r="24" fill="#fff" stroke="#3f7d58" stroke-width="5"/>
+  <circle cx="254" cy="176" r="22" fill="#fff" stroke="#3f7d58" stroke-width="5"/>
+  <circle cx="196" cy="184" r="11" fill="#3d3a4b"/>
+  <circle cx="259" cy="180" r="10" fill="#3d3a4b"/>
+  <circle cx="200" cy="179" r="4" fill="#fff"/>
+  <circle cx="262" cy="175" r="4" fill="#fff"/>
+  <!-- orificios nasales -->
+  <ellipse cx="318" cy="222" rx="5" ry="7" fill="#3f7d58"/>
+  <ellipse cx="300" cy="226" rx="5" ry="7" fill="#3f7d58"/>
+  <!-- sonrisa con dientes -->
+  <path d="M168 246 Q250 290 330 248" fill="none" stroke="#3f7d58" stroke-width="6" stroke-linecap="round"/>
+  <path d="M190 258 l8 14 l8 -10 z M224 268 l8 14 l8 -12 z M262 270 l8 13 l7 -14 z M296 262 l7 12 l7 -15 z" fill="#fff" stroke="#3f7d58" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="150" cy="232" r="13" fill="#f49ab8" opacity=".55"/>
+</svg>

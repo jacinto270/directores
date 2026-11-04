@@ -9,6 +9,8 @@ USE peliculas_bd;
 
 DROP TABLE IF EXISTS pelicula;
 DROP TABLE IF EXISTS director;
+DROP TABLE IF EXISTS usuario;
+DROP TABLE IF EXISTS miembro;
 
 -- Tabla director: id, nombre, nacionalidad, fecha_nacimiento, biografia
 CREATE TABLE director (
@@ -71,3 +73,28 @@ UPDATE director SET biografia = 'Cofundador de Studio Ghibli y maestro de la ani
 UPDATE director SET biografia = 'Director manchego surgido de la Movida madrileña. Su cine, lleno de color, melodrama y personajes femeninos inolvidables, incluye Mujeres al borde de un ataque de nervios, Todo sobre mi madre y Hable con ella.' WHERE nombre = 'Pedro Almodóvar';
 UPDATE director SET biografia = 'Director mexicano conocido por historias entrelazadas y de gran intensidad emocional como Amores perros y Babel. Ganó dos años seguidos el Óscar a mejor director por Birdman y El renacido.' WHERE nombre = 'Alejandro González Iñárritu';
 UPDATE director SET biografia = 'Director quebequense especializado en ciencia ficción y thrillers de atmósfera densa. Ha dirigido Incendies, Prisioneros, La llegada, Blade Runner 2049 y la adaptación de Dune.' WHERE nombre = 'Denis Villeneuve';
+
+-- password guarda la contraseña cifrada con password_hash (60 caracteres o más)
+CREATE TABLE usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    -- admin gestiona usuarios; usuario solo peliculas y directores
+    rol ENUM('admin', 'usuario') NOT NULL DEFAULT 'usuario'
+) ENGINE=InnoDB;
+
+-- Usuario de ejemplo: admin / admin123, con rol de administrador (cámbiale la contraseña)
+INSERT INTO usuario (nombre, password, rol) VALUES
+('admin', '$2y$10$KmViNnMHjL4D8fC8rAAAqurYU0fHI4Buwi4Og6PPi7ueTJpi8xbV6', 'admin');
+
+-- Cuentas del sitio publico (no tienen acceso al panel)
+CREATE TABLE miembro (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(80) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    telefono VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    -- nombre del archivo de la foto de perfil dentro de img/avatares (NULL si no tiene)
+    avatar VARCHAR(255) NULL,
+    fecha_alta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

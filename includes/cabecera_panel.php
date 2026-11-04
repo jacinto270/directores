@@ -28,7 +28,21 @@ $base = $base ?? "../";
         <nav class="admin__menu">
             <a href="<?php echo $base; ?>panel/index.php?tab=peliculas" class="<?php echo $seccion === "peliculas" ? "activo" : ""; ?>"><span>🎞️</span> Películas</a>
             <a href="<?php echo $base; ?>panel/index.php?tab=directores" class="<?php echo $seccion === "directores" ? "activo" : ""; ?>"><span>🎬</span> Directores</a>
+            <?php if (esAdmin()): ?>
+                <a href="<?php echo $base; ?>panel/usuario/usuarios.php" class="<?php echo $seccion === "usuarios" ? "activo" : ""; ?>"><span>👤</span> Usuarios</a>
+            <?php endif; ?>
         </nav>
         <a class="admin__publico" href="<?php echo $base; ?>index.php" target="_blank" title="Ver sitio público"><span class="admin__publico-texto">Ver sitio público</span> ↗</a>
+        <div class="admin__usuario">
+            <div class="admin__usuario-nombre">
+                <span class="avatar avatar--pequeno" data-nombre="<?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?>"></span>
+                <span class="admin__usuario-texto"><?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?></span>
+            </div>
+            <a href="<?php echo $base; ?>panel/usuario/cambiarPassword.php" class="admin__usuario-accion <?php echo $seccion === "usuario" ? "activo" : ""; ?>" title="Cambiar contraseña">🔑<span class="admin__usuario-texto"> Contraseña</span></a>
+            <form action="<?php echo $base; ?>panel/logout.php" method="post">
+                <?php echo campoToken(); ?>
+                <button type="submit" class="admin__usuario-accion" title="Cerrar sesión">⏻<span class="admin__usuario-texto"> Salir</span></button>
+            </form>
+        </div>
     </aside>
     <main class="admin__contenido">

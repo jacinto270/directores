@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/includes/sesion.php";
+requiereMiembro("");
 
 require_once("clases/directorDAO.php");
 require_once("clases/peliculaDAO.php");

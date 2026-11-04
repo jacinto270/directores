@@ -2,7 +2,7 @@
 
 $servidor = "";
 $nombreBase = "";
-$usuario = "";
-$password = "";
+$usuarioBD = "";
+$passwordBD = "";
 
 ?>

@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . "/../../includes/sesion.php";
+requiereLogin("../../");
+verificarToken();
 require_once __DIR__ . "/../../clases/directorDAO.php";
 $directorDAO = new DirectorDAO();
 

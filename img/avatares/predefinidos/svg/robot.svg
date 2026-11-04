@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#d7e6f3"/>
+  <circle cx="60" cy="70" r="6" fill="#fff" opacity=".7"/>
+  <circle cx="340" cy="110" r="4" fill="#fff" opacity=".7"/>
+  <!-- cuerpo -->
+  <rect x="120" y="292" width="160" height="130" rx="34" fill="#a9b8cc" stroke="#55657d" stroke-width="7"/>
+  <rect x="160" y="318" width="80" height="44" rx="10" fill="#55657d"/>
+  <circle cx="180" cy="340" r="9" fill="#ffd27a"/>
+  <circle cx="220" cy="340" r="9" fill="#9be3c3"/>
+  <!-- cuello -->
+  <rect x="180" y="268" width="40" height="30" fill="#7f90a8"/>
+  <!-- antena -->
+  <line x1="200" y1="62" x2="200" y2="104" stroke="#55657d" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="200" cy="54" r="15" fill="#f49ab8" stroke="#55657d" stroke-width="6"/>
+  <!-- orejas -->
+  <rect x="84" y="160" width="32" height="70" rx="12" fill="#8fa0b8" stroke="#55657d" stroke-width="6"/>
+  <rect x="284" y="160" width="32" height="70" rx="12" fill="#8fa0b8" stroke="#55657d" stroke-width="6"/>
+  <!-- cabeza -->
+  <rect x="108" y="100" width="184" height="176" rx="40" fill="#bfcbdc" stroke="#55657d" stroke-width="7"/>
+  <rect x="126" y="118" width="148" height="20" rx="10" fill="#fff" opacity=".45"/>
+  <!-- ojos -->
+  <circle cx="162" cy="182" r="30" fill="#fff" stroke="#55657d" stroke-width="6"/>
+  <circle cx="238" cy="182" r="30" fill="#fff" stroke="#55657d" stroke-width="6"/>
+  <circle cx="168" cy="186" r="14" fill="#2f6a95"/>
+  <circle cx="244" cy="186" r="14" fill="#2f6a95"/>
+  <circle cx="173" cy="180" r="5" fill="#fff"/>
+  <circle cx="249" cy="180" r="5" fill="#fff"/>
+  <!-- mofletes -->
+  <circle cx="134" cy="232" r="13" fill="#f49ab8" opacity=".55"/>
+  <circle cx="266" cy="232" r="13" fill="#f49ab8" opacity=".55"/>
+  <!-- boca -->
+  <rect x="158" y="228" width="84" height="26" rx="9" fill="#55657d"/>
+  <line x1="179" y1="230" x2="179" y2="252" stroke="#bfcbdc" stroke-width="4"/>
+  <line x1="200" y1="230" x2="200" y2="252" stroke="#bfcbdc" stroke-width="4"/>
+  <line x1="221" y1="230" x2="221" y2="252" stroke="#bfcbdc" stroke-width="4"/>
+</svg>

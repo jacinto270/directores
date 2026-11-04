@@ -29,6 +29,31 @@ $seccion = $seccion ?? "";
                     <li><a href="<?php echo $base; ?>directores.php" class="<?php echo $seccion === "directores" ? "activo" : ""; ?>">Directores</a></li>
                 </ul>
             </nav>
+            <?php if (nombreVisitante() !== ""): ?>
+                <div class="visitante">
+                    <?php if (hayMiembro()): ?>
+                        <a class="visitante__perfil <?php echo $seccion === "perfil" ? "activo" : ""; ?>" href="<?php echo $base; ?>perfil.php" title="Mi perfil">
+                    <?php else: ?>
+                        <span class="visitante__perfil">
+                    <?php endif; ?>
+                        <?php if (avatarVisitante()): ?>
+                            <span class="avatar avatar--pequeno"><img src="<?php echo $base; ?>img/avatares/<?php echo htmlspecialchars(avatarVisitante()); ?>" alt=""></span>
+                        <?php else: ?>
+                            <span class="avatar avatar--pequeno" data-nombre="<?php echo htmlspecialchars(nombreVisitante()); ?>"></span>
+                        <?php endif; ?>
+                        <span class="visitante__nombre"><?php echo htmlspecialchars(nombreVisitante()); ?></span>
+                    <?php echo hayMiembro() ? "</a>" : "</span>"; ?>
+                    <?php if (hayMiembro()): ?>
+                        <form action="<?php echo $base; ?>logout.php" method="post">
+                            <?php echo campoToken(); ?>
+                            <button type="submit" class="visitante__accion" title="Cerrar sesión">Salir</button>
+                        </form>
+                    <?php else: ?>
+                        <!-- administrador viendo el sitio publico con la sesion del panel -->
+                        <a class="visitante__accion" href="<?php echo $base; ?>panel/index.php">Panel</a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </header>
     <main class="contenedor">

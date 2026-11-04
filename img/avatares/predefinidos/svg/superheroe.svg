@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#ffe6b8"/>
+  <!-- rayos de fondo -->
+  <g fill="#ffd27a" opacity=".6">
+    <path d="M200 200 L130 0 H190 Z"/>
+    <path d="M200 200 L270 0 H330 Z"/>
+    <path d="M200 200 L0 120 V190 Z"/>
+    <path d="M200 200 L400 120 V190 Z"/>
+  </g>
+  <!-- capa -->
+  <path d="M84 400 Q90 300 150 292 L250 292 Q310 300 316 400 Z" fill="#e2546b"/>
+  <!-- traje y emblema -->
+  <path d="M120 400 Q126 318 200 310 Q274 318 280 400 Z" fill="#4f78b0"/>
+  <path d="M200 334 l12 24 l26 4 l-19 18 l5 26 l-24 -12 l-24 12 l5 -26 l-19 -18 l26 -4 z" fill="#ffd27a" stroke="#c99a2e" stroke-width="4" stroke-linejoin="round"/>
+  <!-- cara -->
+  <circle cx="200" cy="200" r="92" fill="#f5c9a6" stroke="#8a5a3c" stroke-width="5"/>
+  <!-- pelo con tupe -->
+  <path d="M110 186 Q104 102 200 98 Q296 102 290 186 Q276 140 236 136 Q236 112 206 112 Q218 126 200 138 Q150 132 110 186 Z" fill="#3a2a22"/>
+  <!-- antifaz -->
+  <path d="M112 186 Q200 156 288 186 Q292 226 250 228 Q222 230 200 210 Q178 230 150 228 Q108 226 112 186 Z" fill="#4f78b0" stroke="#34558a" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M112 196 L84 206 L114 210 Z M288 196 L316 206 L286 210 Z" fill="#4f78b0"/>
+  <!-- ojos -->
+  <ellipse cx="160" cy="198" rx="19" ry="15" fill="#fff"/>
+  <ellipse cx="240" cy="198" rx="19" ry="15" fill="#fff"/>
+  <circle cx="163" cy="200" r="7" fill="#3d3a4b"/>
+  <circle cx="243" cy="200" r="7" fill="#3d3a4b"/>
+  <!-- sonrisa -->
+  <path d="M164 248 Q200 284 236 248 Z" fill="#fff" stroke="#8a5a3c" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="136" cy="244" r="11" fill="#f49ab8" opacity=".55"/>
+  <circle cx="264" cy="244" r="11" fill="#f49ab8" opacity=".55"/>
+</svg>

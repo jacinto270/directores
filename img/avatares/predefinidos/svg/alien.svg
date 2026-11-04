@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#dcd2f7"/>
+  <!-- platillo volante -->
+  <ellipse cx="320" cy="78" rx="46" ry="14" fill="#b8c4d6" stroke="#55657d" stroke-width="4"/>
+  <path d="M296 72 Q320 40 344 72 Z" fill="#cbe4f6" stroke="#55657d" stroke-width="4"/>
+  <path d="M304 92 L290 130 H350 L336 92 Z" fill="#fff6d6" opacity=".7"/>
+  <circle cx="60" cy="90" r="4" fill="#fff"/>
+  <circle cx="80" cy="330" r="3" fill="#fff"/>
+  <path d="M50 180 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z" fill="#fff"/>
+  <!-- cuerpo -->
+  <path d="M120 400 Q126 318 200 310 Q274 318 280 400 Z" fill="#7fd1ae" stroke="#3f8a6a" stroke-width="6"/>
+  <!-- antenas -->
+  <path d="M164 108 Q150 60 124 50" fill="none" stroke="#3f8a6a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M236 108 Q250 60 276 50" fill="none" stroke="#3f8a6a" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="122" cy="48" r="13" fill="#f49ab8" stroke="#3f8a6a" stroke-width="5"/>
+  <circle cx="278" cy="48" r="13" fill="#f49ab8" stroke="#3f8a6a" stroke-width="5"/>
+  <!-- cabeza -->
+  <path d="M200 96 Q306 96 304 196 Q300 290 200 312 Q100 290 96 196 Q94 96 200 96 Z" fill="#9be3c3" stroke="#3f8a6a" stroke-width="7"/>
+  <!-- tres ojos -->
+  <ellipse cx="150" cy="194" rx="28" ry="34" fill="#fff" stroke="#3f8a6a" stroke-width="5"/>
+  <ellipse cx="250" cy="194" rx="28" ry="34" fill="#fff" stroke="#3f8a6a" stroke-width="5"/>
+  <ellipse cx="200" cy="148" rx="18" ry="20" fill="#fff" stroke="#3f8a6a" stroke-width="5"/>
+  <circle cx="156" cy="200" r="15" fill="#3d3a4b"/>
+  <circle cx="244" cy="200" r="15" fill="#3d3a4b"/>
+  <circle cx="200" cy="152" r="9" fill="#3d3a4b"/>
+  <circle cx="162" cy="192" r="6" fill="#fff"/>
+  <circle cx="250" cy="192" r="6" fill="#fff"/>
+  <circle cx="203" cy="148" r="3" fill="#fff"/>
+  <!-- sonrisa -->
+  <path d="M168 254 Q200 282 232 254" fill="none" stroke="#3f8a6a" stroke-width="7" stroke-linecap="round"/>
+  <path d="M210 266 q6 16 -4 22 q-10 -4 -6 -18 z" fill="#f49ab8"/>
+  <circle cx="122" cy="246" r="12" fill="#f49ab8" opacity=".5"/>
+  <circle cx="278" cy="246" r="12" fill="#f49ab8" opacity=".5"/>
+</svg>

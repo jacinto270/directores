@@ -1,16 +1,17 @@
 <?php
 
 require_once __DIR__ . "/director.php";
-require_once(__DIR__ . "/../clases/datos/config.php");
 
 class DirectorDAO {
     private $conexion;
 
   public function __construct()
     {
-        global $servidor, $nombreBase, $usuario, $password;
+        //los datos de conexion se cargan aqui y no con global, asi funciona
+        //aunque la clase se cargue por primera vez dentro de una funcion
+        require __DIR__ . "/datos/config.php";
 
-        $this->conexion = new PDO("mysql:host=$servidor;dbname=$nombreBase;charset=utf8mb4", $usuario, $password);
+        $this->conexion = new PDO("mysql:host=$servidor;dbname=$nombreBase;charset=utf8mb4", $usuarioBD, $passwordBD);
 
         $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

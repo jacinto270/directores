@@ -1663,3 +1663,624 @@ img {
         text-decoration: none;
     }
 }
+
+/* ==========================================================
+   Sesión: login, avisos y usuario del panel
+   ========================================================== */
+
+/* ---------- página de login ---------- */
+
+body.acceso {
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+
+.acceso__caja {
+    width: 100%;
+    max-width: 400px;
+}
+
+.acceso__marca {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.acceso__marca .marca__icono {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    border-radius: 15px;
+    font-size: 1.5rem;
+}
+
+.acceso__marca h1 {
+    font-size: 1.6rem;
+}
+
+.acceso__marca p {
+    margin: 6px 0 0;
+    color: var(--texto-suave);
+}
+
+.acceso .formulario {
+    max-width: none;
+}
+
+.acceso__volver {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.boton--bloque {
+    width: 100%;
+    padding: 12px 18px;
+    font-size: .95rem;
+}
+
+/* ---------- avisos dentro de la página ---------- */
+
+.alerta {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radio-pequeno);
+    font-size: .9rem;
+    font-weight: 500;
+}
+
+.alerta--error {
+    background: var(--rosa);
+    color: var(--rosa-fuerte);
+}
+
+.alerta--ok {
+    background: var(--menta);
+    color: var(--menta-fuerte);
+}
+
+.formulario-ancho {
+    max-width: 640px;
+}
+
+/* ---------- usuario en el menú lateral ---------- */
+
+.admin__usuario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--borde);
+}
+
+.admin__usuario-nombre {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.admin__usuario-nombre .admin__usuario-texto {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.avatar--pequeno {
+    width: 32px;
+    height: 32px;
+    font-size: .75rem;
+}
+
+.admin__usuario form {
+    display: flex;
+}
+
+.admin__usuario-accion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-pequeno);
+    background: var(--superficie);
+    color: var(--texto-suave);
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--transicion), color var(--transicion), border-color var(--transicion);
+}
+
+.admin__usuario-accion:hover,
+.admin__usuario-accion.activo {
+    border-color: var(--lavanda);
+    background: var(--lavanda-claro);
+    color: var(--lavanda-fuerte);
+}
+
+.admin__usuario form .admin__usuario-accion:hover {
+    border-color: var(--rosa);
+    background: var(--rosa);
+    color: var(--rosa-fuerte);
+}
+
+/* en tablet y móvil el usuario va en la barra superior, junto al enlace público */
+@media (max-width: 900px) {
+    .admin__lateral {
+        grid-template-columns: 1fr auto auto;
+        grid-template-areas: "marca usuario publico" "menu menu menu";
+    }
+
+    .admin__usuario {
+        grid-area: usuario;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0;
+        border: 0;
+    }
+
+    .admin__usuario-nombre {
+        display: none;
+    }
+
+    .admin__usuario-accion {
+        width: auto;
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 560px) {
+    .admin__usuario .admin__usuario-texto {
+        display: none;
+    }
+}
+
+@media print {
+    .admin__usuario {
+        display: none !important;
+    }
+}
+
+/* ==========================================================
+   Gestión de usuarios
+   ========================================================== */
+
+.dos-columnas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.dos-columnas .formulario {
+    max-width: none;
+}
+
+.tarjeta__titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.formulario .tarjeta__titulo {
+    margin-bottom: 18px;
+}
+
+.lista-usuarios {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lista-usuarios li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.lista-usuarios li:last-child {
+    border-bottom: 0;
+}
+
+@media (max-width: 1100px) {
+    .dos-columnas {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .lista-usuarios li > form,
+    .lista-usuarios li > .boton {
+        width: 100%;
+    }
+
+    .lista-usuarios li .boton {
+        width: 100%;
+    }
+}
+
+/* ==========================================================
+   Cuentas del sitio público
+   ========================================================== */
+
+.acceso__caja--ancha {
+    max-width: 560px;
+}
+
+.acceso__alternativa {
+    margin: 18px 0 0;
+    text-align: center;
+    font-size: .92rem;
+    color: var(--texto-suave);
+}
+
+.acceso__alternativa a {
+    font-weight: 600;
+}
+
+/* error debajo de cada campo */
+.campo__error {
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--rosa-fuerte);
+}
+
+.campo--error input {
+    border-color: var(--rosa-fuerte);
+    background: #fff7fa;
+}
+
+/* medidor de seguridad de la contraseña */
+.fuerza {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .78rem;
+    color: var(--texto-suave);
+}
+
+.fuerza__barra {
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--borde);
+    overflow: hidden;
+}
+
+.fuerza__relleno {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: var(--rosa-fuerte);
+    transition: width .25s ease, background .25s ease;
+}
+
+/* nombre del visitante y botón de salir en la cabecera pública */
+.visitante {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visitante__nombre {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: .9rem;
+}
+
+.visitante form {
+    display: flex;
+}
+
+.visitante__accion {
+    padding: 6px 12px;
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    background: var(--superficie);
+    color: var(--texto-suave);
+    font: inherit;
+    font-size: .84rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--transicion), color var(--transicion), border-color var(--transicion);
+}
+
+.visitante__accion:hover {
+    border-color: var(--rosa);
+    background: var(--rosa);
+    color: var(--rosa-fuerte);
+}
+
+@media (max-width: 900px) {
+    .visitante__nombre {
+        display: none;
+    }
+}
+
+/* en móvil el menú baja a una segunda fila para que quepa el usuario */
+@media (max-width: 560px) {
+    .cabecera__contenido {
+        flex-wrap: wrap;
+        row-gap: 10px;
+    }
+
+    .cabecera .nav {
+        order: 3;
+        flex-basis: 100%;
+    }
+
+    .cabecera .nav ul {
+        justify-content: stretch;
+    }
+
+    .cabecera .nav li {
+        flex: 1;
+        text-align: center;
+    }
+
+    .cabecera .marca__texto {
+        display: inline;
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .cabecera .marca__texto {
+        display: none;
+    }
+}
+
+@media print {
+    .visitante {
+        display: none !important;
+    }
+}
+
+.etiqueta--rol {
+    background: var(--lavanda-claro);
+    color: var(--lavanda-fuerte);
+}
+
+.lista-usuarios .etiqueta {
+    margin-left: 6px;
+    font-size: .7rem;
+    vertical-align: middle;
+}
+
+/* ==========================================================
+   Perfil del miembro
+   ========================================================== */
+
+/* avatar con foto en lugar de iniciales */
+.avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar {
+    overflow: hidden;
+}
+
+/* enlace al perfil en la cabecera */
+.visitante__perfil {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 10px 3px 3px;
+    border-radius: 999px;
+    color: var(--texto);
+    text-decoration: none;
+    transition: background var(--transicion);
+}
+
+a.visitante__perfil:hover,
+.visitante__perfil.activo {
+    background: var(--lavanda-claro);
+}
+
+@media (max-width: 900px) {
+    .visitante__perfil {
+        padding-right: 3px;
+    }
+}
+
+.perfil {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.perfil__formularios {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.perfil__formularios .formulario {
+    max-width: none;
+}
+
+.perfil__avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 28px 24px;
+    text-align: center;
+}
+
+.perfil__foto {
+    width: 132px;
+    height: 132px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, var(--lavanda), var(--rosa));
+}
+
+.perfil__foto img,
+.perfil__foto .avatar--perfil {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid var(--superficie);
+    object-fit: cover;
+    display: grid;
+}
+
+.avatar--perfil {
+    font-size: 2.4rem;
+}
+
+.perfil__avatar h2 {
+    font-size: 1.3rem;
+    overflow-wrap: anywhere;
+}
+
+.perfil__email,
+.perfil__alta {
+    margin: 0;
+    font-size: .88rem;
+    color: var(--texto-suave);
+    overflow-wrap: anywhere;
+}
+
+.perfil__subida {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+/* el input de archivo se oculta y se usa el boton como etiqueta */
+.perfil__elegir {
+    position: relative;
+    cursor: pointer;
+}
+
+.perfil__elegir input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.perfil__elegir:focus-within {
+    outline: 3px solid var(--lavanda);
+    outline-offset: 2px;
+}
+
+.perfil__quitar {
+    margin-top: 4px;
+    padding: 4px 8px;
+    border: 0;
+    background: none;
+    color: var(--rosa-fuerte);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.perfil__quitar:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+    .perfil {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- avatares de personajes en el perfil ---------- */
+
+.personajes {
+    width: 100%;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--borde);
+}
+
+.personajes__titulo {
+    display: block;
+    margin-bottom: 12px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--texto-suave);
+}
+
+.personajes__rejilla {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.personaje {
+    aspect-ratio: 1;
+    padding: 0;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    background: none;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transicion), border-color var(--transicion), box-shadow var(--transicion);
+}
+
+.personaje img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.personaje:hover {
+    transform: scale(1.08);
+    box-shadow: var(--sombra);
+}
+
+.personaje:focus-visible {
+    outline: 3px solid var(--lavanda);
+    outline-offset: 2px;
+}
+
+.personaje.activo {
+    border-color: var(--lavanda-fuerte);
+    box-shadow: 0 0 0 3px var(--lavanda-claro);
+}
+
+/* en movil la tarjeta del avatar ocupa todo el ancho: personajes mas grandes */
+@media (max-width: 860px) {
+    .personajes__rejilla {
+        max-width: 380px;
+        margin: 0 auto;
+    }
+}

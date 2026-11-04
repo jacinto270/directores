@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#c9ecdc"/>
+  <!-- chispas -->
+  <path d="M58 120 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z" fill="#fff6d6"/>
+  <path d="M340 230 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z" fill="#fff6d6"/>
+  <circle cx="330" cy="90" r="5" fill="#fff"/>
+  <!-- tunica -->
+  <path d="M90 400 Q100 316 200 306 Q300 316 310 400 Z" fill="#6c5bb5"/>
+  <!-- cara -->
+  <circle cx="200" cy="222" r="80" fill="#f5d2b4" stroke="#8a5a3c" stroke-width="5"/>
+  <!-- barba larga -->
+  <path d="M124 236 Q118 380 200 396 Q282 380 276 236 Q252 272 200 272 Q148 272 124 236 Z" fill="#fbfbfd" stroke="#c9c4dc" stroke-width="5"/>
+  <path d="M170 300 Q182 330 172 360 M200 296 Q212 336 200 372 M230 300 Q222 330 232 360" fill="none" stroke="#d9d4e8" stroke-width="5" stroke-linecap="round"/>
+  <!-- bigote -->
+  <path d="M152 256 Q176 236 200 254 Q224 236 248 256 Q226 270 200 262 Q174 270 152 256 Z" fill="#fff" stroke="#c9c4dc" stroke-width="4"/>
+  <!-- sombrero -->
+  <path d="M112 176 L210 22 L292 176 Z" fill="#6c5bb5" stroke="#4a3d8a" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M210 22 Q250 18 262 44" fill="none" stroke="#4a3d8a" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="200" cy="176" rx="118" ry="22" fill="#5a4a9e" stroke="#4a3d8a" stroke-width="6"/>
+  <path d="M190 80 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z" fill="#ffd27a"/>
+  <path d="M232 128 a12 12 0 1 0 8 -18 a9 9 0 1 1 -8 18 z" fill="#ffd27a"/>
+  <circle cx="160" cy="140" r="5" fill="#ffd27a"/>
+  <!-- cejas -->
+  <path d="M150 204 Q168 190 186 202" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M214 202 Q232 190 250 204" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <!-- ojos -->
+  <circle cx="170" cy="222" r="9" fill="#3d3a4b"/>
+  <circle cx="230" cy="222" r="9" fill="#3d3a4b"/>
+  <circle cx="173" cy="219" r="3" fill="#fff"/>
+  <circle cx="233" cy="219" r="3" fill="#fff"/>
+  <!-- nariz y mofletes -->
+  <ellipse cx="200" cy="242" rx="11" ry="9" fill="#eab08f"/>
+  <circle cx="148" cy="246" r="10" fill="#f49ab8" opacity=".5"/>
+  <circle cx="252" cy="246" r="10" fill="#f49ab8" opacity=".5"/>
+</svg>

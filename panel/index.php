@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../includes/sesion.php";
+requiereLogin("../");
 require_once __DIR__ . "/../clases/directorDAO.php";
 require_once __DIR__ . "/../clases/peliculaDAO.php";
 
@@ -109,6 +111,7 @@ require __DIR__ . "/../includes/cabecera_panel.php";
                                 <td class="col-acciones">
                                     <a class="boton boton--pequeno boton--editar" href="pelicula/formPelicula.php?id=<?php echo $p->getId(); ?>">Editar</a>
                                     <form action="pelicula/eliminarPelicula.php" method="post" data-confirmar="Se eliminará «<?php echo htmlspecialchars($p->getTitulo()); ?>». Esta acción no se puede deshacer.">
+                                        <?php echo campoToken(); ?>
                                         <input type="hidden" name="id" value="<?php echo $p->getId(); ?>">
                                         <button type="submit" class="boton boton--pequeno boton--eliminar">Eliminar</button>
                                     </form>
@@ -151,6 +154,7 @@ require __DIR__ . "/../includes/cabecera_panel.php";
                                 <td class="col-acciones">
                                     <a class="boton boton--pequeno boton--editar" href="director/formDirector.php?id=<?php echo $director->getId(); ?>">Editar</a>
                                     <form action="director/eliminarDirector.php" method="post" data-confirmar="Se eliminará a <?php echo htmlspecialchars($director->getNombre()); ?>. Esta acción no se puede deshacer.">
+                                        <?php echo campoToken(); ?>
                                         <input type="hidden" name="id" value="<?php echo $director->getId(); ?>">
                                         <button type="submit" class="boton boton--pequeno boton--eliminar">Eliminar</button>
                                     </form>

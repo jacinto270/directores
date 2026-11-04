@@ -10,8 +10,85 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarConfirmacion();
     iniciarContador();
     iniciarVistaPrevia();
+    iniciarFuerzaPassword();
+    iniciarAvatarPerfil();
+    iniciarCambioEmail();
     mostrarAviso();
 });
+
+// perfil: vista previa de la foto elegida y boton para guardarla
+function iniciarAvatarPerfil() {
+    const input = document.querySelector("input[data-avatar]");
+    if (!input) return;
+
+    const guardar = document.querySelector("[data-guardar-avatar]");
+    input.addEventListener("change", () => {
+        const archivo = input.files[0];
+        if (!archivo || !archivo.type.startsWith("image/")) return;
+
+        const actual = document.querySelector("[data-vista-previa-avatar]");
+        const img = document.createElement("img");
+        img.alt = "Vista previa de tu foto";
+        img.src = URL.createObjectURL(archivo);
+        img.dataset.vistaPreviaAvatar = "";
+        actual.replaceWith(img);
+        guardar.hidden = false;
+    });
+}
+
+// perfil: al cambiar el email aparece el campo de la contraseña actual
+function iniciarCambioEmail() {
+    const email = document.querySelector("input[data-email-original]");
+    const campo = document.querySelector("[data-pide-password]");
+    if (!email || !campo) return;
+
+    email.addEventListener("input", () => {
+        const cambiado = email.value.trim().toLowerCase() !== email.dataset.emailOriginal;
+        campo.hidden = !cambiado;
+        campo.querySelector("input").required = cambiado;
+    });
+}
+
+// barra que indica lo segura que es la contraseña mientras se escribe
+function iniciarFuerzaPassword() {
+    const input = document.querySelector("input[data-fuerza]");
+    if (!input) return;
+
+    const medidor = document.createElement("div");
+    medidor.className = "fuerza";
+    medidor.innerHTML = '<div class="fuerza__barra"><div class="fuerza__relleno"></div></div><span class="fuerza__texto"></span>';
+    input.after(medidor);
+
+    const relleno = medidor.querySelector(".fuerza__relleno");
+    const texto = medidor.querySelector(".fuerza__texto");
+    const niveles = [
+        { texto: "Muy débil", color: "#b2406f" },
+        { texto: "Débil", color: "#b45a32" },
+        { texto: "Aceptable", color: "#a08a1c" },
+        { texto: "Buena", color: "#2f7d5d" },
+        { texto: "Muy buena", color: "#2f7d5d" },
+    ];
+
+    const actualizar = () => {
+        const valor = input.value;
+        medidor.hidden = valor === "";
+        let puntos = 0;
+        if (valor.length >= 8) puntos++;
+        if (valor.length >= 12) puntos++;
+        if (/[a-záéíóúñ]/.test(valor) && /[A-ZÁÉÍÓÚÑ]/.test(valor)) puntos++;
+        if (/[0-9]/.test(valor) && /\p{L}/u.test(valor)) puntos++;
+        if (/[^\p{L}0-9]/u.test(valor)) puntos++;
+        // sin el minimo que exige el servidor nunca pasa de "Débil"
+        if (valor.length < 8 || !/[0-9]/.test(valor) || !/\p{L}/u.test(valor)) puntos = Math.min(puntos, 1);
+        const nivel = niveles[Math.min(puntos, niveles.length - 1)];
+        relleno.style.width = ((puntos + 1) / niveles.length) * 100 + "%";
+        relleno.style.background = nivel.color;
+        texto.textContent = nivel.texto;
+    };
+
+    input.addEventListener("input", actualizar);
+    actualizar();
+}
 
 // muestra la portada elegida antes de subirla
 function iniciarVistaPrevia() {
@@ -172,13 +249,24 @@ function mostrarAviso() {
         pelicula_creada: "Película añadida correctamente",
         pelicula_actualizada: "Película actualizada correctamente",
         pelicula_eliminada: "Película eliminada",
+        password_cambiada: "Contraseña cambiada correctamente",
+        usuario_creado: "Usuario creado correctamente",
+        usuario_eliminado: "Usuario eliminado",
+        usuario_no_eliminado: "No puedes eliminar tu propio usuario",
+        ultimo_admin: "No se puede eliminar al único administrador",
+        sin_permiso: "Solo los administradores pueden gestionar usuarios",
+        bienvenida: "Cuenta creada. ¡Te damos la bienvenida!",
+        avatar_actualizado: "Foto de perfil actualizada",
+        avatar_quitado: "Foto de perfil quitada",
+        datos_actualizados: "Datos guardados correctamente",
     };
     if (!textos[msg]) return;
 
     const aviso = document.createElement("div");
-    aviso.className = "aviso" + (msg.includes("elimina") ? " aviso--eliminado" : "");
+    aviso.className = "aviso" + (msg.includes("elimina") || msg === "ultimo_admin" || msg === "sin_permiso" ? " aviso--eliminado" : "");
     aviso.setAttribute("role", "status");
-    aviso.textContent = "✓ " + textos[msg];
+    const esError = msg.includes("_no_") || msg === "ultimo_admin" || msg === "sin_permiso";
+    aviso.textContent = (esError ? "✕ " : "✓ ") + textos[msg];
     document.body.appendChild(aviso);
 
     requestAnimationFrame(() => aviso.classList.add("visible"));
