@@ -3,12 +3,14 @@
 // ==========================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    iniciarImagenesOpcionales();
     iniciarAvatares();
     iniciarBiografias();
     iniciarBuscador();
     iniciarFiltros();
     iniciarConfirmacion();
     iniciarContador();
+    iniciarValidacion();
     iniciarVistaPrevia();
     iniciarFuerzaPassword();
     iniciarAvatarPerfil();
@@ -56,11 +58,16 @@ function iniciarFuerzaPassword() {
 
     const medidor = document.createElement("div");
     medidor.className = "fuerza";
-    medidor.innerHTML = '<div class="fuerza__barra"><div class="fuerza__relleno"></div></div><span class="fuerza__texto"></span>';
+    // se crea con createElement y no con innerHTML: asi nunca se interpreta HTML
+    const barra = document.createElement("div");
+    barra.className = "fuerza__barra";
+    const relleno = document.createElement("div");
+    relleno.className = "fuerza__relleno";
+    const texto = document.createElement("span");
+    texto.className = "fuerza__texto";
+    barra.append(relleno);
+    medidor.append(barra, texto);
     input.after(medidor);
-
-    const relleno = medidor.querySelector(".fuerza__relleno");
-    const texto = medidor.querySelector(".fuerza__texto");
     const niveles = [
         { texto: "Muy débil", color: "#b2406f" },
         { texto: "Débil", color: "#b45a32" },
@@ -225,6 +232,127 @@ function iniciarConfirmacion() {
 }
 
 // contador de caracteres para textareas con maxlength
+// ---------- limpieza de textos en el navegador ----------
+// Es una ayuda para el usuario: la proteccion de verdad esta en el servidor (sanitizarTexto,
+// consultas preparadas y htmlspecialchars), porque cualquiera puede saltarse este codigo
+
+// etiquetas HTML o PHP: <b>, </script>, <?php ...
+const TIENE_HTML = /<\s*\/?\s*[a-z!?][^>]*>/i;
+
+// campos de texto que se limpian: no las contraseñas, ni archivos, fechas o numeros
+function esTextoLibre(campo) {
+    return campo.tagName === "TEXTAREA" || ["text", "search", "email", "tel"].includes(campo.type);
+}
+
+// quita caracteres de control invisibles y espacios de sobra; en textareas conserva los saltos de linea
+function limpiarTexto(texto, multilinea) {
+    if (multilinea) {
+        return texto
+            .replace(/\r\n/g, "\n")
+            .replace(/[^\P{C}\n\t]/gu, "")
+            .replace(/[ \t]+/g, " ")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
+    }
+    return texto.replace(/\p{C}/gu, "").replace(/\s+/g, " ").trim();
+}
+
+// imagenes que se ocultan si no cargan (sustituye al onerror="..." en linea, que la CSP bloquea)
+function iniciarImagenesOpcionales() {
+    document.querySelectorAll("img[data-ocultar-si-falla]").forEach((img) => {
+        // puede haber fallado antes de que se ejecute este codigo
+        if (img.complete && img.naturalWidth === 0) {
+            img.remove();
+            return;
+        }
+        img.addEventListener("error", () => img.remove(), { once: true });
+    });
+}
+
+// formularios con data-validar: avisa de los errores antes de enviar, debajo de cada campo.
+// Es solo una ayuda: el servidor vuelve a comprobarlo todo
+function iniciarValidacion() {
+    document.querySelectorAll("form[data-validar]").forEach((formulario) => {
+        // se desactivan las burbujas del navegador para mostrar mensajes propios
+        formulario.noValidate = true;
+        const campos = [...formulario.querySelectorAll("input, select, textarea")].filter(
+            (c) => c.willValidate && c.type !== "hidden"
+        );
+
+        const mensajeDe = (campo) => {
+            if (campo.required && campo.value.trim() === "") {
+                return campo.dataset.mensaje || "Este campo es obligatorio.";
+            }
+            // en ningun texto se admite HTML (el servidor tambien lo quita)
+            if (esTextoLibre(campo) && TIENE_HTML.test(campo.value)) {
+                return "No se permite escribir etiquetas HTML ni código.";
+            }
+            if (campo.dataset.igualA) {
+                const otro = formulario.querySelector("#" + CSS.escape(campo.dataset.igualA));
+                if (otro && campo.value !== otro.value) {
+                    return campo.dataset.mensaje || "Los valores no coinciden.";
+                }
+            }
+            if (campo.type === "file" && campo.files[0] && campo.dataset.maxBytes && campo.files[0].size > Number(campo.dataset.maxBytes)) {
+                return "La imagen no puede pesar más de " + Math.round(campo.dataset.maxBytes / 1048576) + " MB.";
+            }
+            if (!campo.checkValidity()) {
+                return campo.dataset.mensaje || campo.validationMessage;
+            }
+            return "";
+        };
+
+        const pintar = (campo, mensaje) => {
+            const caja = campo.closest(".campo");
+            if (!caja) return;
+            let error = caja.querySelector(".campo__error");
+            caja.classList.toggle("campo--error", mensaje !== "");
+            if (mensaje) {
+                if (!error) {
+                    error = document.createElement("span");
+                    error.className = "campo__error";
+                    error.setAttribute("role", "alert");
+                    campo.after(error);
+                }
+                error.textContent = mensaje;
+                campo.setAttribute("aria-invalid", "true");
+            } else {
+                if (error) error.remove();
+                campo.removeAttribute("aria-invalid");
+            }
+        };
+
+        formulario.addEventListener("submit", (evento) => {
+            // antes de comprobar se limpian los textos (no las contraseñas: se envian tal cual)
+            campos.filter(esTextoLibre).forEach((campo) => {
+                campo.value = limpiarTexto(campo.value, campo.tagName === "TEXTAREA");
+            });
+
+            let primero = null;
+            campos.forEach((campo) => {
+                const mensaje = mensajeDe(campo);
+                pintar(campo, mensaje);
+                if (mensaje && !primero) primero = campo;
+            });
+            if (primero) {
+                evento.preventDefault();
+                primero.focus();
+            }
+        });
+
+        // en cuanto el campo se corrige desaparece su error
+        campos.forEach((campo) => {
+            const revisar = () => {
+                if (campo.closest(".campo")?.classList.contains("campo--error")) {
+                    pintar(campo, mensajeDe(campo));
+                }
+            };
+            campo.addEventListener("input", revisar);
+            campo.addEventListener("change", revisar);
+        });
+    });
+}
+
 function iniciarContador() {
     document.querySelectorAll("textarea[maxlength]").forEach((textarea) => {
         const ayuda = document.createElement("span");

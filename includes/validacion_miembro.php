@@ -2,17 +2,19 @@
 //reglas de los datos de un miembro, compartidas por el registro y el perfil
 //cada funcion devuelve el mensaje de error o "" si el dato es valido
 
-function limpiarNombre(string $nombre): string {
-    return trim(preg_replace('/\s+/u', " ", $nombre));
+require_once __DIR__ . "/seguridad.php";
+
+function limpiarNombre(mixed $nombre): string {
+    return sanitizarTexto($nombre);
 }
 
-function limpiarEmail(string $email): string {
-    return mb_strtolower(trim($email));
+function limpiarEmail(mixed $email): string {
+    return mb_strtolower(sanitizarTexto($email));
 }
 
 //el telefono se guarda sin espacios, guiones ni parentesis: +34600111222
-function limpiarTelefono(string $telefono): string {
-    return preg_replace('/[\s\-().]/', "", trim($telefono));
+function limpiarTelefono(mixed $telefono): string {
+    return preg_replace('/[\s\-().]/', "", sanitizarTexto($telefono));
 }
 
 function errorNombre(string $nombre): string {

@@ -90,7 +90,7 @@ require __DIR__ . "/../includes/cabecera_panel.php";
                                 <td class="col-principal">
                                     <div class="persona">
                                         <span class="miniatura">
-                                            <img src="../img/<?php echo htmlspecialchars($p->getImagen()); ?>" alt="" loading="lazy" onerror="this.remove()">
+                                            <img src="../img/<?php echo htmlspecialchars($p->getImagen()); ?>" alt="" loading="lazy" data-ocultar-si-falla>
                                         </span>
                                         <span>
                                             <?php echo htmlspecialchars($p->getTitulo()); ?>

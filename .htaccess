@@ -1,0 +1,14 @@
+# Reglas de acceso para todo el proyecto
+# (las carpetas clases/ e includes/ tienen ademas su propio .htaccess que las bloquea enteras)
+
+# No mostrar la lista de archivos de una carpeta cuando no tiene index
+Options -Indexes
+
+# Carpetas y archivos ocultos (.git, .htaccess, .gitignore...): el historial de git
+# permitiria descargar todo el codigo fuente
+RedirectMatch 404 /\.(?!well-known)
+
+# Archivos que no son paginas: copias de bases de datos, scripts SQL, notas, registros, copias de seguridad
+<FilesMatch "\.(sql|db|sqlite|md|log|ini|bak|old|orig|swp|dist)$|~$">
+    Require all denied
+</FilesMatch>

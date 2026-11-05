@@ -1,5 +1,8 @@
 <?php
-//sesion del panel: se incluye al principio de cada pagina del panel
+//sesion del panel y del sitio publico: se incluye al principio de cada pagina
+
+//cabeceras de seguridad y limpieza de textos, para todas las paginas
+require_once __DIR__ . "/seguridad.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
@@ -143,5 +146,19 @@ function verificarToken(): void {
         http_response_code(403);
         exit("Petición no válida. Vuelve atrás y recarga la página.");
     }
+}
+
+// ---------- formularios que vuelven con errores ----------
+
+//guarda los errores y lo escrito para mostrarlos en el formulario tras redirigir
+function guardarFormulario(string $nombre, array $datos, array $errores): void {
+    $_SESSION["formulario"][$nombre] = ["datos" => $datos, "errores" => $errores];
+}
+
+//devuelve [datos, errores] guardados y los borra, para que solo se vean una vez
+function recuperarFormulario(string $nombre): array {
+    $guardado = $_SESSION["formulario"][$nombre] ?? ["datos" => [], "errores" => []];
+    unset($_SESSION["formulario"][$nombre]);
+    return [$guardado["datos"], $guardado["errores"]];
 }
 ?>

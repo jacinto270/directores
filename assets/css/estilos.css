@@ -2284,3 +2284,17 @@ a.visitante__perfil:hover,
         margin: 0 auto;
     }
 }
+
+/* ---------- validación de formularios ---------- */
+
+.obligatorio {
+    color: var(--rosa-fuerte);
+    font-weight: 700;
+}
+
+.campo--error select,
+.campo--error textarea,
+.campo--error input[type="file"] {
+    border-color: var(--rosa-fuerte);
+    background-color: #fff7fa;
+}

@@ -43,7 +43,7 @@ function borrarAvatar(?string $archivo, string $carpeta): void {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     verificarToken();
-    $formulario = $_POST["accion"] ?? "";
+    $formulario = campoPost("accion");
 
     //---------- subir foto de perfil ----------
     if ($formulario === "avatar") {
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     //---------- elegir un avatar de personaje ----------
     if ($formulario === "avatar_predefinido") {
-        $clave = $_POST["personaje"] ?? "";
+        $clave = campoPost("personaje");
         //solo se aceptan los de la lista, nunca una ruta enviada por el usuario
         if (isset(AVATARES_PREDEFINIDOS[$clave]) && is_file($carpetaAvatares . "predefinidos/$clave.webp")) {
             borrarAvatar($miembro->getAvatar(), $carpetaAvatares);
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "email" => errorEmail($email, $dao, $miembro->getId()),
             "telefono" => errorTelefono($telefono),
             //cambiar el email permite entrar con otro, asi que se pide la contraseña
-            "password_datos" => $cambiaEmail && !password_verify($_POST["password_actual"] ?? "", $miembro->getPassword())
+            "password_datos" => $cambiaEmail && !password_verify(campoPost("password_actual"), $miembro->getPassword())
                 ? "Para cambiar el email escribe tu contraseña actual." : "",
         ]);
 
@@ -128,14 +128,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         //se vuelve a mostrar lo que escribio para que pueda corregirlo
         $miembro->setNombre($nombre);
         $miembro->setEmail($email);
-        $miembro->setTelefono($_POST["telefono"] ?? "");
+        $miembro->setTelefono(sanitizarTexto($_POST["telefono"] ?? ""));
     }
 
     //---------- contraseña ----------
     if ($formulario === "password") {
-        $actual = $_POST["actual"] ?? "";
-        $nueva = $_POST["nueva"] ?? "";
-        $confirmar = $_POST["confirmar"] ?? "";
+        $actual = campoPost("actual");
+        $nueva = campoPost("nueva");
+        $confirmar = campoPost("confirmar");
 
         $errores = array_filter([
             "actual" => !password_verify($actual, $miembro->getPassword()) ? "La contraseña actual no es correcta." : "",
@@ -225,7 +225,7 @@ $erroresDe = fn(string $nombre) => $formulario === $nombre ? $errores : [];
 
         <div class="perfil__formularios">
             <!-- datos personales -->
-            <form class="tarjeta formulario" method="post">
+            <form class="tarjeta formulario" method="post" data-validar>
                 <h2 class="tarjeta__titulo">Datos personales</h2>
                 <?php $e = $erroresDe("datos"); ?>
                 <?php echo campoToken(); ?>
@@ -264,7 +264,7 @@ $erroresDe = fn(string $nombre) => $formulario === $nombre ? $errores : [];
             </form>
 
             <!-- contraseña -->
-            <form class="tarjeta formulario" method="post">
+            <form class="tarjeta formulario" method="post" data-validar>
                 <h2 class="tarjeta__titulo">Cambiar contraseña</h2>
                 <?php $e = $erroresDe("password"); ?>
                 <?php echo campoToken(); ?>
@@ -285,7 +285,7 @@ $erroresDe = fn(string $nombre) => $formulario === $nombre ? $errores : [];
 
                     <div class="campo <?php echo isset($e["confirmar"]) ? "campo--error" : ""; ?>">
                         <label for="confirmar">Repite la nueva contraseña</label>
-                        <input type="password" id="confirmar" name="confirmar" minlength="8" autocomplete="new-password" required>
+                        <input type="password" id="confirmar" name="confirmar" minlength="8" autocomplete="new-password" required data-igual-a="nueva" data-mensaje="Las contraseñas no coinciden.">
                         <?php echo errorCampo($e, "confirmar"); ?>
                     </div>
                 </div>

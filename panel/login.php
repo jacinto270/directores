@@ -14,8 +14,8 @@ $nombre = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     verificarToken();
 
-    $nombre = trim($_POST["nombre"] ?? "");
-    $password = $_POST["password"] ?? "";
+    $nombre = sanitizarTexto($_POST["nombre"] ?? "");
+    $password = campoPost("password");
 
     $usuario = (new UsuarioDAO())->login($nombre, $password);
 

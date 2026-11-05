@@ -1,0 +1,3 @@
+# Clases, configuracion y scripts SQL: solo los usa PHP por dentro (require),
+# nunca se piden desde el navegador. Se bloquea toda la carpeta.
+Require all denied

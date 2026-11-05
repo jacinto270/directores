@@ -1,0 +1,3 @@
+# Piezas que montan las paginas (cabeceras, sesion, validaciones...): solo las usa PHP
+# por dentro (require), nunca se piden desde el navegador. Se bloquea toda la carpeta.
+Require all denied

@@ -16,10 +16,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $datos["nombre"] = limpiarNombre($_POST["nombre"] ?? "");
     $datos["email"] = limpiarEmail($_POST["email"] ?? "");
-    $datos["telefono"] = trim($_POST["telefono"] ?? "");
+    $datos["telefono"] = sanitizarTexto($_POST["telefono"] ?? "");
     $telefono = limpiarTelefono($datos["telefono"]);
-    $password = $_POST["password"] ?? "";
-    $confirmar = $_POST["confirmar"] ?? "";
+    $password = campoPost("password");
+    $confirmar = campoPost("confirmar");
 
     $dao = new MiembroDAO();
 
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <p>Regístrate gratis para ver el catálogo de películas.</p>
         </div>
 
-        <form class="tarjeta formulario" method="post" novalidate>
+        <form class="tarjeta formulario" method="post" data-validar>
             <?php echo campoToken(); ?>
 
             <div class="campo <?php echo isset($errores["nombre"]) ? "campo--error" : ""; ?>">
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div class="campo <?php echo isset($errores["confirmar"]) ? "campo--error" : ""; ?>">
                     <label for="confirmar">Repite la contraseña</label>
-                    <input type="password" id="confirmar" name="confirmar" minlength="8" autocomplete="new-password" required>
+                    <input type="password" id="confirmar" name="confirmar" minlength="8" autocomplete="new-password" required data-igual-a="password" data-mensaje="Las contraseñas no coinciden.">
                     <?php echo errorCampo($errores, "confirmar"); ?>
                 </div>
             </div>

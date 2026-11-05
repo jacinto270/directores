@@ -13,8 +13,8 @@ $email = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     verificarToken();
 
-    $email = mb_strtolower(trim($_POST["email"] ?? ""));
-    $password = $_POST["password"] ?? "";
+    $email = mb_strtolower(sanitizarTexto($_POST["email"] ?? ""));
+    $password = campoPost("password");
 
     $miembro = (new MiembroDAO())->login($email, $password);
 

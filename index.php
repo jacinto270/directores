@@ -43,7 +43,7 @@ require __DIR__ . "/includes/cabecera.php";
                 <div class="pelicula__portada">
                     <span class="pelicula__inicial"><?php echo htmlspecialchars($p->getTitulo()); ?></span>
                     <!-- si la imagen no existe se quita y queda el titulo sobre el degradado -->
-                    <img src="img/<?php echo htmlspecialchars($p->getImagen()); ?>" alt="<?php echo htmlspecialchars($p->getTitulo()); ?>" loading="lazy" onerror="this.remove()">
+                    <img src="img/<?php echo htmlspecialchars($p->getImagen()); ?>" alt="<?php echo htmlspecialchars($p->getTitulo()); ?>" loading="lazy" data-ocultar-si-falla>
                     <span class="pelicula__estado"><?php echo $p->getAnio(); ?></span>
                 </div>
                 <div class="pelicula__cuerpo">
