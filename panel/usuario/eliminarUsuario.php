@@ -3,26 +3,31 @@ require_once __DIR__ . "/../../includes/sesion.php";
 requiereAdmin("../../");
 verificarToken();
 require_once __DIR__ . "/../../clases/usuarioDAO.php";
+require_once __DIR__ . "/../../includes/base_datos.php";
 
-$id = (int) ($_POST["id"] ?? 0);
-$dao = new UsuarioDAO();
+$id = idPost();
 
-$usuario = $dao->findById($id);
+try {
+    $dao = new UsuarioDAO();
+    $usuario = $id !== null ? $dao->findById($id) : null;
 
-//no se puede eliminar el usuario con el que se ha entrado ni dejar el panel sin usuarios
-if (!$usuario || $id === $_SESSION["usuario_id"] || $dao->contar() <= 1) {
-    header("Location: usuarios.php?msg=usuario_no_eliminado");
-    exit;
+    if (!$usuario) {
+        avisar("error", "No se ha eliminado nada: ese usuario no existe (puede que ya estuviera eliminado).");
+    } elseif ($id === $_SESSION["usuario_id"]) {
+        //no se puede eliminar el usuario con el que se ha entrado
+        avisar("error", "No puedes eliminar tu propio usuario.");
+    } elseif ($usuario->getRol() === "admin" && $dao->contarAdmins() <= 1) {
+        //ni el ultimo administrador, o nadie podria volver a gestionar usuarios
+        avisar("error", "No se puede eliminar al único administrador.");
+    } elseif ($dao->delete($id)) {
+        avisar("ok", "Usuario «" . $usuario->getNombre() . "» eliminado correctamente.");
+    } else {
+        avisar("error", "No se ha eliminado nada: ese usuario ya no existe.");
+    }
+} catch (PDOException $e) {
+    avisarErrorBD($e, "eliminar el usuario");
 }
 
-//tampoco el ultimo administrador, o nadie podria volver a gestionar usuarios
-if ($usuario->getRol() === "admin" && $dao->contarAdmins() <= 1) {
-    header("Location: usuarios.php?msg=ultimo_admin");
-    exit;
-}
-
-$dao->delete($id);
-
-header("Location: usuarios.php?msg=usuario_eliminado");
+header("Location: usuarios.php");
 exit;
 ?>

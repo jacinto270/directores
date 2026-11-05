@@ -4,6 +4,12 @@
 # No mostrar la lista de archivos de una carpeta cuando no tiene index
 Options -Indexes
 
+# Los avatares y las portadas nuevas son WEBP: algunos servidores antiguos no conocen
+# este formato y los envian como "archivo desconocido", y el navegador no los muestra
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+</IfModule>
+
 # Carpetas y archivos ocultos (.git, .htaccess, .gitignore...): el historial de git
 # permitiria descargar todo el codigo fuente
 RedirectMatch 404 /\.(?!well-known)

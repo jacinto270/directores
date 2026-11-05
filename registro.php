@@ -2,6 +2,7 @@
 require_once __DIR__ . "/includes/sesion.php";
 require_once __DIR__ . "/clases/miembroDAO.php";
 require_once __DIR__ . "/includes/validacion_miembro.php";
+require_once __DIR__ . "/includes/base_datos.php";
 
 if (hayMiembro()) {
     header("Location: index.php");
@@ -32,10 +33,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ]);
 
     if (!$errores) {
-        $id = $dao->insert($datos["nombre"], $datos["email"], $telefono, $password);
-        iniciarSesionMiembro($dao->findById($id));
-        header("Location: index.php?msg=bienvenida");
-        exit;
+        try {
+            $id = $dao->insert($datos["nombre"], $datos["email"], $telefono, $password);
+            iniciarSesionMiembro($dao->findById($id));
+            avisar("ok", "Cuenta creada. ¡Te damos la bienvenida, " . $datos["nombre"] . "!");
+            header("Location: index.php");
+            exit;
+        } catch (PDOException $e) {
+            //se queda en el formulario con lo escrito; el aviso de error se muestra abajo
+            avisarErrorBD($e, "crear tu cuenta");
+        }
     }
 }
 ?>
@@ -101,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p class="acceso__alternativa">¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
     </main>
 
+<?php require __DIR__ . "/includes/aviso.php"; ?>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

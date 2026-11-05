@@ -287,6 +287,11 @@ function iniciarValidacion() {
             if (esTextoLibre(campo) && TIENE_HTML.test(campo.value)) {
                 return "No se permite escribir etiquetas HTML ni código.";
             }
+            // la contraseña no puede contener el nombre de usuario (misma regla que el servidor)
+            const prohibido = (campo.dataset.noContener || "").toLowerCase();
+            if (prohibido.length >= 3 && campo.value.toLowerCase().includes(prohibido)) {
+                return "La contraseña no puede contener tu nombre de usuario («" + campo.dataset.noContener + "»).";
+            }
             if (campo.dataset.igualA) {
                 const otro = formulario.querySelector("#" + CSS.escape(campo.dataset.igualA));
                 if (otro && campo.value !== otro.value) {
@@ -340,6 +345,14 @@ function iniciarValidacion() {
             }
         });
 
+        // si el servidor ha devuelto el formulario con errores, se lleva al usuario al primero
+        // (los campos de contraseña vuelven vacios y, sin esto, parecia que no habia pasado nada)
+        const primerError = formulario.querySelector(".campo--error input, .campo--error select, .campo--error textarea");
+        if (primerError) {
+            primerError.scrollIntoView({ block: "center" });
+            primerError.focus({ preventScroll: true });
+        }
+
         // en cuanto el campo se corrige desaparece su error
         campos.forEach((campo) => {
             const revisar = () => {
@@ -366,45 +379,19 @@ function iniciarContador() {
     });
 }
 
-// aviso temporal después de crear, actualizar o eliminar (?msg=...)
+// aviso del resultado de la ultima operacion. Lo escribe el servidor (includes/aviso.php)
+// tras guardar o eliminar: los de exito se ocultan solos, los de error se quedan hasta cerrarlos
 function mostrarAviso() {
-    const parametros = new URLSearchParams(window.location.search);
-    const msg = parametros.get("msg");
-    const textos = {
-        creado: "Director creado correctamente",
-        actualizado: "Director actualizado correctamente",
-        eliminado: "Director eliminado",
-        pelicula_creada: "Película añadida correctamente",
-        pelicula_actualizada: "Película actualizada correctamente",
-        pelicula_eliminada: "Película eliminada",
-        password_cambiada: "Contraseña cambiada correctamente",
-        usuario_creado: "Usuario creado correctamente",
-        usuario_eliminado: "Usuario eliminado",
-        usuario_no_eliminado: "No puedes eliminar tu propio usuario",
-        ultimo_admin: "No se puede eliminar al único administrador",
-        sin_permiso: "Solo los administradores pueden gestionar usuarios",
-        bienvenida: "Cuenta creada. ¡Te damos la bienvenida!",
-        avatar_actualizado: "Foto de perfil actualizada",
-        avatar_quitado: "Foto de perfil quitada",
-        datos_actualizados: "Datos guardados correctamente",
-    };
-    if (!textos[msg]) return;
+    const aviso = document.querySelector("[data-aviso]");
+    if (!aviso) return;
 
-    const aviso = document.createElement("div");
-    aviso.className = "aviso" + (msg.includes("elimina") || msg === "ultimo_admin" || msg === "sin_permiso" ? " aviso--eliminado" : "");
-    aviso.setAttribute("role", "status");
-    const esError = msg.includes("_no_") || msg === "ultimo_admin" || msg === "sin_permiso";
-    aviso.textContent = (esError ? "✕ " : "✓ ") + textos[msg];
-    document.body.appendChild(aviso);
-
-    requestAnimationFrame(() => aviso.classList.add("visible"));
-    setTimeout(() => {
+    const cerrar = () => {
         aviso.classList.remove("visible");
         setTimeout(() => aviso.remove(), 300);
-    }, 3000);
+    };
+    aviso.querySelector("[data-cerrar-aviso]")?.addEventListener("click", cerrar);
 
-    // quita ?msg de la URL para que no se repita al recargar
-    parametros.delete("msg");
-    const query = parametros.toString();
-    history.replaceState(null, "", window.location.pathname + (query ? "?" + query : ""));
+    if (aviso.dataset.aviso === "ok") {
+        setTimeout(cerrar, 4000);
+    }
 }

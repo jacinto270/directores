@@ -117,7 +117,9 @@ class PeliculasDAO{
         public function eliminar(int $id): bool{
             $sql = "DELETE FROM pelicula WHERE id = :id";
             $stmt = $this->conexion->prepare($sql);
-            return $stmt->execute([":id" => $id]);
+            $stmt->execute([":id" => $id]);
+            //true si se ha borrado, false si no existia ese id
+            return $stmt->rowCount() > 0;
         }
     }
 

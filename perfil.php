@@ -3,6 +3,7 @@ require_once __DIR__ . "/includes/sesion.php";
 requiereCuentaMiembro("");
 require_once __DIR__ . "/clases/miembroDAO.php";
 require_once __DIR__ . "/includes/validacion_miembro.php";
+require_once __DIR__ . "/includes/base_datos.php";
 require_once __DIR__ . "/includes/imagenes.php";
 
 $dao = new MiembroDAO();
@@ -41,6 +42,25 @@ function borrarAvatar(?string $archivo, string $carpeta): void {
     }
 }
 
+/*
+ * Guarda la nueva foto en la base de datos y despues borra la anterior del disco
+ * (en este orden: si la base de datos falla, la foto anterior sigue intacta).
+ * Siempre deja un aviso con el resultado y vuelve al perfil.
+ */
+function cambiarFoto(MiembroDAO $dao, Miembro $miembro, ?string $nueva, string $carpeta, string $textoOk): never {
+    try {
+        $dao->cambiarAvatar($miembro->getId(), $nueva);
+        borrarAvatar($miembro->getAvatar(), $carpeta);
+        avisar("ok", $textoOk);
+    } catch (PDOException $e) {
+        //la foto nueva no ha llegado a usarse: se borra para no dejar archivos sueltos
+        borrarAvatar($nueva, $carpeta);
+        avisarErrorBD($e, "cambiar tu foto de perfil");
+    }
+    header("Location: perfil.php");
+    exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     verificarToken();
     $formulario = campoPost("accion");
@@ -69,10 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 //se recorta, se reduce y se guarda con un nombre aleatorio que no se puede adivinar
                 $nombreArchivo = guardarAvatar($archivo["tmp_name"], $tipo, $carpetaAvatares);
                 if ($nombreArchivo) {
-                    borrarAvatar($miembro->getAvatar(), $carpetaAvatares);
-                    $dao->cambiarAvatar($miembro->getId(), $nombreArchivo);
-                    header("Location: perfil.php?msg=avatar_actualizado");
-                    exit;
+                    cambiarFoto($dao, $miembro, $nombreArchivo, $carpetaAvatares, "Foto de perfil actualizada correctamente.");
                 }
                 $errores["avatar"] = "No se pudo guardar la imagen. Inténtalo de nuevo.";
             }
@@ -84,20 +101,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $clave = campoPost("personaje");
         //solo se aceptan los de la lista, nunca una ruta enviada por el usuario
         if (isset(AVATARES_PREDEFINIDOS[$clave]) && is_file($carpetaAvatares . "predefinidos/$clave.webp")) {
-            borrarAvatar($miembro->getAvatar(), $carpetaAvatares);
-            $dao->cambiarAvatar($miembro->getId(), "predefinidos/$clave.webp");
-            header("Location: perfil.php?msg=avatar_actualizado");
-            exit;
+            cambiarFoto($dao, $miembro, "predefinidos/$clave.webp", $carpetaAvatares, "Ahora tu avatar es el " . mb_strtolower(AVATARES_PREDEFINIDOS[$clave]) . ".");
         }
         $errores["personaje"] = "Elige uno de los personajes.";
     }
 
     //---------- quitar foto de perfil ----------
     if ($formulario === "quitar_avatar") {
-        borrarAvatar($miembro->getAvatar(), $carpetaAvatares);
-        $dao->cambiarAvatar($miembro->getId(), null);
-        header("Location: perfil.php?msg=avatar_quitado");
-        exit;
+        cambiarFoto($dao, $miembro, null, $carpetaAvatares, "Foto de perfil quitada.");
     }
 
     //---------- datos personales ----------
@@ -120,9 +131,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $miembro->setNombre($nombre);
             $miembro->setEmail($email);
             $miembro->setTelefono($telefono);
-            $dao->update($miembro);
-            header("Location: perfil.php?msg=datos_actualizados");
-            exit;
+            try {
+                $dao->update($miembro);
+                avisar("ok", "Datos guardados correctamente." . ($cambiaEmail ? " A partir de ahora entra con $email." : ""));
+                header("Location: perfil.php");
+                exit;
+            } catch (PDOException $e) {
+                //se queda en la pagina con lo escrito; el aviso de error se muestra abajo
+                avisarErrorBD($e, "guardar tus datos");
+                $formulario = "";
+            }
         }
 
         //se vuelve a mostrar lo que escribio para que pueda corregirlo
@@ -144,11 +162,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ]);
 
         if (!$errores) {
-            $dao->cambiarPassword($miembro->getId(), $nueva);
-            //nuevo id de sesion tras cambiar la contraseña
-            session_regenerate_id(true);
-            header("Location: perfil.php?msg=password_cambiada");
-            exit;
+            try {
+                $dao->cambiarPassword($miembro->getId(), $nueva);
+                //nuevo id de sesion tras cambiar la contraseña
+                session_regenerate_id(true);
+                avisar("ok", "Contraseña cambiada correctamente.");
+                header("Location: perfil.php");
+                exit;
+            } catch (PDOException $e) {
+                //la contraseña sigue siendo la anterior; el aviso de error se muestra abajo
+                avisarErrorBD($e, "cambiar tu contraseña");
+            }
         }
     }
 }

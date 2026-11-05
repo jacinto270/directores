@@ -3,6 +3,7 @@ require_once __DIR__ . "/../../includes/sesion.php";
 requiereLogin("../../");
 require_once __DIR__ . "/../../clases/usuarioDAO.php";
 require_once __DIR__ . "/../../includes/validacion_panel.php";
+require_once __DIR__ . "/../../includes/base_datos.php";
 
 $errores = [];
 
@@ -30,13 +31,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (!$errores) {
-        $dao->cambiarPassword($usuario->getId(), $nueva);
-        //nuevo id de sesion tras cambiar la contraseña
-        session_regenerate_id(true);
-        header("Location: ../index.php?msg=password_cambiada");
-        exit;
+        try {
+            $dao->cambiarPassword($usuario->getId(), $nueva);
+            //nuevo id de sesion tras cambiar la contraseña
+            session_regenerate_id(true);
+            //se vuelve a esta misma pagina con un mensaje claro dentro de ella
+            //(antes volvia al panel con un aviso pequeño que desaparecia solo y pasaba desapercibido)
+            $_SESSION["password_cambiada"] = true;
+            header("Location: cambiarPassword.php");
+            exit;
+        } catch (PDOException $e) {
+            //la contraseña sigue siendo la anterior; el aviso de error se muestra en esta pagina
+            avisarErrorBD($e, "cambiar la contraseña");
+        }
     }
 }
+
+//mensaje de exito dentro de la pagina tras cambiarla (solo se muestra una vez)
+$cambiada = !empty($_SESSION["password_cambiada"]);
+unset($_SESSION["password_cambiada"]);
 
 $titulo = "Cambiar contraseña";
 $seccion = "usuario";
@@ -53,8 +66,20 @@ require __DIR__ . "/../../includes/cabecera_panel.php";
     </div>
 
     <?php if ($errores): ?>
-        <div class="alerta alerta--error formulario-ancho" role="alert">
-            Revisa los campos marcados: <?php echo count($errores) === 1 ? "hay 1 error" : "hay " . count($errores) . " errores"; ?>.
+        <!-- se dice exactamente que ha fallado: los campos de contraseña vuelven vacios y sin esto parecia que no pasaba nada -->
+        <div class="alerta alerta--error formulario-ancho" role="alert" data-ir-al-error>
+            <strong>No se ha cambiado la contraseña.</strong>
+            <ul class="alerta__lista">
+                <?php foreach ($errores as $error): ?>
+                    <li><?php echo htmlspecialchars($error); ?></li>
+                <?php endforeach; ?>
+            </ul>
+            Vuelve a escribir las contraseñas.
+        </div>
+    <?php elseif ($cambiada): ?>
+        <div class="alerta alerta--ok formulario-ancho" role="status">
+            <strong>✓ Contraseña cambiada correctamente.</strong> La próxima vez que inicies sesión, usa la nueva.
+            <a href="../index.php">Volver al panel</a>
         </div>
     <?php endif; ?>
 
@@ -74,8 +99,9 @@ require __DIR__ . "/../../includes/cabecera_panel.php";
                 <input type="password" id="nueva" name="nueva"
                        minlength="<?php echo PASSWORD_MIN; ?>" maxlength="<?php echo PASSWORD_MAX; ?>"
                        pattern="(?=.*\p{L})(?=.*[0-9]).+" autocomplete="new-password" required data-fuerza
+                       data-no-contener="<?php echo htmlspecialchars($_SESSION["usuario_nombre"]); ?>"
                        data-mensaje="La contraseña debe tener al menos <?php echo PASSWORD_MIN; ?> caracteres, con letras y números.">
-                <?php echo errorCampoPanel($errores, "nueva") ?: '<span class="campo__nota">Mínimo ' . PASSWORD_MIN . ' caracteres, con letras y números.</span>'; ?>
+                <?php echo errorCampoPanel($errores, "nueva") ?: '<span class="campo__nota">Mínimo ' . PASSWORD_MIN . ' caracteres, con letras y números, distinta de la actual y sin tu nombre de usuario («' . htmlspecialchars($_SESSION["usuario_nombre"]) . '»).</span>'; ?>
             </div>
 
             <div class="campo <?php echo claseError($errores, "confirmar"); ?>">

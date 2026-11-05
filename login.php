@@ -74,5 +74,7 @@ $salida = ($_GET["msg"] ?? "") === "salida";
 
         <p class="acceso__alternativa">¿Aún no tienes cuenta? <a href="registro.php">Regístrate gratis</a></p>
     </main>
+<?php require __DIR__ . "/includes/aviso.php"; ?>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

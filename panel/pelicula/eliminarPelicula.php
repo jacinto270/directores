@@ -3,24 +3,32 @@ require_once __DIR__ . "/../../includes/sesion.php";
 requiereLogin("../../");
 verificarToken();
 require_once __DIR__ . "/../../clases/peliculaDAO.php";
+require_once __DIR__ . "/../../includes/base_datos.php";
 
-//solo se elimina si llega el id por POST desde el panel
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["id"])) {
-    $id = (int) $_POST["id"];
-    $dao = new PeliculasDAO();
-    $pelicula = $dao->getById($id);
+$id = idPost();
 
-    if ($pelicula) {
-        $dao->eliminar($id);
+if ($id === null) {
+    avisar("error", "No se ha podido eliminar la película: la petición no indica cuál.");
+} else {
+    try {
+        $dao = new PeliculasDAO();
+        $pelicula = $dao->getById($id);
 
-        //se borra tambien la portada si estaba subida en img
-        $ruta = __DIR__ . "/../../img/" . basename($pelicula->getImagen());
-        if ($pelicula->getImagen() !== "" && is_file($ruta)) {
-            unlink($ruta);
+        if ($pelicula && $dao->eliminar($id)) {
+            //la portada se borra solo despues de borrar la pelicula de la base de datos
+            $ruta = __DIR__ . "/../../img/" . basename($pelicula->getImagen());
+            if ($pelicula->getImagen() !== "" && is_file($ruta)) {
+                unlink($ruta);
+            }
+            avisar("ok", "Película «" . $pelicula->getTitulo() . "» eliminada correctamente.");
+        } else {
+            avisar("error", "No se ha eliminado nada: esa película no existe (puede que ya estuviera eliminada).");
         }
+    } catch (PDOException $e) {
+        avisarErrorBD($e, "eliminar la película");
     }
 }
 
-header("Location: ../index.php?tab=peliculas&msg=pelicula_eliminada");
+header("Location: ../index.php?tab=peliculas");
 exit;
 ?>

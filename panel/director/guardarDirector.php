@@ -4,15 +4,17 @@ requiereLogin("../../");
 verificarToken();
 require_once __DIR__ . "/../../clases/directorDAO.php";
 require_once __DIR__ . "/../../includes/validacion_panel.php";
+require_once __DIR__ . "/../../includes/base_datos.php";
 $directorDAO = new DirectorDAO();
 
-$id = isset($_POST["id"]) && $_POST["id"] !== "" ? (int) $_POST["id"] : null;
+$id = idPost();
 
 //al editar, el director tiene que existir
 $director = null;
-if ($id !== null) {
-    $director = $directorDAO->findById($id);
+if (($_POST["id"] ?? "") !== "") {
+    $director = $id !== null ? $directorDAO->findById($id) : null;
     if (!$director) {
+        avisar("error", "No se ha guardado nada: ese director no existe (puede que lo haya eliminado otra persona).");
         header("Location: ../index.php?tab=directores");
         exit;
     }
@@ -28,19 +30,27 @@ if ($errores) {
 }
 
 //si existe un id, se actualiza el director, si no, se crea uno nuevo
-if ($director) {
-    $director->setNombre($datos["nombre"]);
-    $director->setNacionalidad($datos["nacionalidad"]);
-    $director->setFechaNacimiento($datos["fechaNacimiento"]);
-    $director->setBiografia($datos["biografia"]);
-    $directorDAO->update($director);
-    $mensaje = "actualizado";
-} else {
-    $nuevoDirector = new Director(null, $datos["nombre"], $datos["nacionalidad"], $datos["fechaNacimiento"], $datos["biografia"]);
-    $directorDAO->insert($nuevoDirector);
-    $mensaje = "creado";
+try {
+    if ($director) {
+        $director->setNombre($datos["nombre"]);
+        $director->setNacionalidad($datos["nacionalidad"]);
+        $director->setFechaNacimiento($datos["fechaNacimiento"]);
+        $director->setBiografia($datos["biografia"]);
+        $directorDAO->update($director);
+        avisar("ok", "Director «" . $datos["nombre"] . "» actualizado correctamente.");
+    } else {
+        $nuevoDirector = new Director(null, $datos["nombre"], $datos["nacionalidad"], $datos["fechaNacimiento"], $datos["biografia"]);
+        $directorDAO->insert($nuevoDirector);
+        avisar("ok", "Director «" . $datos["nombre"] . "» creado correctamente.");
+    }
+} catch (PDOException $e) {
+    //se vuelve al formulario con lo escrito, para no perderlo
+    avisarErrorBD($e, $director ? "actualizar el director" : "crear el director");
+    guardarFormulario("director", $datos, []);
+    header("Location: formDirector.php" . ($id !== null ? "?id=$id" : ""));
+    exit;
 }
 
-header("Location: ../index.php?tab=directores&msg=$mensaje");
+header("Location: ../index.php?tab=directores");
 exit;
 ?>

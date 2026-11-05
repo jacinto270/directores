@@ -53,10 +53,12 @@ class UsuarioDAO {
         ]);
     }
 
-    public function delete($id) {
+    //devuelve true si se ha borrado, false si no existia ese id
+    public function delete($id): bool {
         $sql = "DELETE FROM usuario WHERE id = ?";
         $stmt = $this->conexion->prepare($sql);
-        return $stmt->execute([$id]);
+        $stmt->execute([$id]);
+        return $stmt->rowCount() > 0;
     }
 
     public function findById($id) {

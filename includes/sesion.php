@@ -47,7 +47,8 @@ function esAdmin(): bool {
 function requiereAdmin(string $base): void {
     requiereLogin($base);
     if (!esAdmin()) {
-        header("Location: {$base}panel/index.php?msg=sin_permiso");
+        avisar("error", "Solo los administradores pueden gestionar usuarios.");
+        header("Location: {$base}panel/index.php");
         exit;
     }
 }
@@ -146,6 +147,21 @@ function verificarToken(): void {
         http_response_code(403);
         exit("Petición no válida. Vuelve atrás y recarga la página.");
     }
+}
+
+// ---------- avisos al usuario tras guardar, eliminar... ----------
+
+//guarda un aviso para mostrarlo en la siguiente pagina (tras la redireccion)
+//$tipo: "ok" si la operacion ha ido bien, "error" si ha fallado
+function avisar(string $tipo, string $texto): void {
+    $_SESSION["aviso"] = ["tipo" => $tipo === "ok" ? "ok" : "error", "texto" => $texto];
+}
+
+//devuelve el aviso pendiente y lo borra, para que solo se vea una vez
+function tomarAviso(): ?array {
+    $aviso = $_SESSION["aviso"] ?? null;
+    unset($_SESSION["aviso"]);
+    return $aviso;
 }
 
 // ---------- formularios que vuelven con errores ----------

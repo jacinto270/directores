@@ -76,5 +76,7 @@ $salida = ($_GET["msg"] ?? "") === "salida";
 
         <a class="acceso__volver" href="../index.php">← Volver al sitio público</a>
     </main>
+<?php require __DIR__ . "/../includes/aviso.php"; ?>
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

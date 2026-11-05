@@ -1,9 +1,11 @@
 # Carpeta de fotos de perfil subidas por los miembros:
-# solo se sirven imagenes y nunca se ejecuta codigo
-<FilesMatch "\.(php\d?|phtml|phar|cgi|pl|py|sh|html?|svg)$">
+# solo se sirven imagenes y nunca se ejecuta codigo.
+#
+# Solo usa instrucciones que funcionan en cualquier hosting. Directivas como
+# "Options" o "php_flag" no estan permitidas en muchos servidores compartidos y
+# Apache responde con error 500 a TODOS los archivos de la carpeta (y los avatares
+# dejan de verse). No hacen falta: si los scripts estan bloqueados, no se pueden ejecutar,
+# y el listado de carpetas ya lo desactiva el .htaccess de la raiz del proyecto.
+<FilesMatch "\.(php\d?|phtml|phar|pht|cgi|pl|py|sh|asp|aspx|jsp|html?|xhtml|svg|svgz|js)$">
     Require all denied
 </FilesMatch>
-<IfModule mod_php.c>
-    php_flag engine off
-</IfModule>
-Options -Indexes -ExecCGI

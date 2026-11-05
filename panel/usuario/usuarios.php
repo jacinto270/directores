@@ -3,6 +3,7 @@ require_once __DIR__ . "/../../includes/sesion.php";
 requiereAdmin("../../");
 require_once __DIR__ . "/../../clases/usuarioDAO.php";
 require_once __DIR__ . "/../../includes/validacion_panel.php";
+require_once __DIR__ . "/../../includes/base_datos.php";
 
 $dao = new UsuarioDAO();
 $errores = [];
@@ -15,9 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     [$datos, $errores, $password] = validarUsuario($_POST, $dao);
 
     if (!$errores) {
-        $dao->insert($datos["nombre"], $password, $datos["rol"]);
-        header("Location: usuarios.php?msg=usuario_creado");
-        exit;
+        try {
+            $dao->insert($datos["nombre"], $password, $datos["rol"]);
+            avisar("ok", "Usuario «" . $datos["nombre"] . "» creado correctamente" . ($datos["rol"] === "admin" ? " como administrador." : "."));
+            header("Location: usuarios.php");
+            exit;
+        } catch (PDOException $e) {
+            //se queda en la pagina con lo escrito; el aviso de error se muestra abajo
+            avisarErrorBD($e, "crear el usuario");
+        }
     }
 }
 
