@@ -13,6 +13,22 @@ const ALTO_PORTADA = 900;
 const EXTENSIONES_IMAGEN = ["image/jpeg" => "jpg", "image/png" => "png", "image/webp" => "webp", "image/gif" => "gif"];
 
 /*
+ * Tipo real de un archivo subido, mirando su contenido (no su nombre).
+ * Usa la extension fileinfo si el servidor la tiene; si no (algunos hostings gratuitos),
+ * lo averigua con getimagesize(), que viene siempre con PHP.
+ */
+function tipoImagen(string $ruta): string {
+    if (function_exists("mime_content_type")) {
+        $tipo = mime_content_type($ruta);
+        if ($tipo !== false) {
+            return $tipo;
+        }
+    }
+    $info = @getimagesize($ruta);
+    return $info["mime"] ?? "application/octet-stream";
+}
+
+/*
  * Guarda una foto de perfil recortada en cuadrado y reducida a LADO_AVATAR, como WEBP.
  * Devuelve el nombre del archivo guardado dentro de $carpeta, o null si falla.
  */

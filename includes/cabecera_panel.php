@@ -33,7 +33,7 @@ $base = $base ?? "../";
                 <?php
                     //buzon de pruebas: solo tiene sentido cuando los correos se guardan en archivos
                     require_once __DIR__ . "/../clases/correo.php";
-                    if (Correo::modo() !== "smtp"):
+                    if (Correo::modo() === "archivo"):
                 ?>
                     <a href="<?php echo $base; ?>panel/correos.php" class="<?php echo $seccion === "correos" ? "activo" : ""; ?>"><span>📬</span> Correos</a>
                 <?php endif; ?>

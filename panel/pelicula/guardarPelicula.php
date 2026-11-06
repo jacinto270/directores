@@ -45,7 +45,7 @@ function comprobarImagen(array &$errores): ?string {
         return null;
     }
     //el tipo se comprueba por el contenido del archivo, no por su nombre
-    $tipo = mime_content_type($archivo["tmp_name"]);
+    $tipo = tipoImagen($archivo["tmp_name"]);
     $medidas = @getimagesize($archivo["tmp_name"]);
     if (!isset(EXTENSIONES_IMAGEN[$tipo]) || !$medidas) {
         $errores["imagen"] = "La portada debe ser una imagen JPG, PNG, WEBP o GIF.";

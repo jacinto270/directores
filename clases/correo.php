@@ -3,6 +3,7 @@
 //segun $correo["modo"] en config.php:
 //  "archivo": el correo no se envia, se guarda como .txt en clases/datos/correos/ (para probar sin servidor de correo)
 //  "smtp":    se envia de verdad con PHPMailer
+//  "brevo":   se envia de verdad con la API de Brevo (recomendado: funciona aunque el hosting bloquee SMTP)
 
 require_once __DIR__ . "/lib/PHPMailer/Exception.php";
 require_once __DIR__ . "/lib/PHPMailer/PHPMailer.php";
@@ -33,11 +34,101 @@ class Correo {
     public static function enviar(string $para, string $nombre, string $asunto, string $html, string $texto): void {
         $config = self::configuracion()["correo"];
 
-        if (($config["modo"] ?? "archivo") === "smtp") {
-            self::enviarSmtp($config, $para, $nombre, $asunto, $html, $texto);
-        } else {
-            self::guardarEnArchivo($config, $para, $nombre, $asunto, $texto);
+        match ($config["modo"] ?? "archivo") {
+            "brevo" => self::enviarBrevo($config, $para, $nombre, $asunto, $html, $texto),
+            "smtp" => self::enviarSmtp($config, $para, $nombre, $asunto, $html, $texto),
+            default => self::guardarEnArchivo($config, $para, $nombre, $asunto, $texto),
+        };
+    }
+
+    //clave de la API de Brevo: la variable de entorno BREVO_API_KEY tiene preferencia sobre config.php
+    private static function claveBrevo(array $config): string {
+        $deEntorno = getenv("BREVO_API_KEY");
+        return trim($deEntorno !== false && $deEntorno !== "" ? $deEntorno : (string) ($config["brevo"]["apiKey"] ?? ""));
+    }
+
+    /*
+     * Envio con la API transaccional de Brevo (https://developers.brevo.com/reference/sendtransacemail).
+     * Usa cURL, que ya viene en XAMPP. El remitente debe estar verificado en Brevo
+     * (Remitentes, dominios e IPs dedicadas); si no, Brevo rechaza el envio.
+     */
+    private static function enviarBrevo(array $config, string $para, string $nombre, string $asunto, string $html, string $texto): void {
+        $clave = self::claveBrevo($config);
+        if ($clave === "") {
+            throw new RuntimeException("Falta la clave de la API de Brevo (\$correo[\"brevo\"][\"apiKey\"] en config.php o la variable de entorno BREVO_API_KEY).");
         }
+        $destinatario = ["email" => $para];
+        if ($nombre !== "") {
+            $destinatario["name"] = $nombre;
+        }
+        $datos = [
+            "sender" => ["email" => $config["remitente"], "name" => $config["nombreRemitente"] ?? ""],
+            "to" => [$destinatario],
+            "subject" => $asunto,
+            "htmlContent" => $html,
+            "textContent" => $texto,
+        ];
+        if (!empty($config["brevo"]["etiquetas"])) {
+            $datos["tags"] = array_values((array) $config["brevo"]["etiquetas"]);
+        }
+
+        [$estado, $respuesta, $errorConexion] = self::peticionPost(
+            "https://api.brevo.com/v3/smtp/email",
+            ["accept: application/json", "content-type: application/json", "api-key: " . $clave],
+            json_encode($datos, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+            (int) ($config["brevo"]["timeout"] ?? 15)
+        );
+
+        if ($respuesta === false) {
+            throw new RuntimeException("No se pudo conectar con Brevo: $errorConexion");
+        }
+        //Brevo responde 201 Created con {"messageId": "..."} si todo ha ido bien
+        if ($estado < 200 || $estado >= 300) {
+            $json = json_decode((string) $respuesta, true);
+            $mensaje = is_array($json) ? ($json["message"] ?? $respuesta) : $respuesta;
+            $codigo = is_array($json) ? ($json["code"] ?? "") : "";
+            throw new RuntimeException(sprintf("Brevo rechazó el envío (HTTP %d%s): %s", $estado, $codigo !== "" ? ", $codigo" : "", $mensaje));
+        }
+    }
+
+    /*
+     * Peticion POST por HTTPS. Devuelve [codigo HTTP, respuesta o false, error de conexion].
+     * Usa cURL si el servidor la tiene; si no (algunos hostings gratuitos), las funciones
+     * normales de PHP para abrir direcciones web (necesitan allow_url_fopen, activado por defecto).
+     */
+    private static function peticionPost(string $url, array $cabeceras, string $cuerpo, int $segundos): array {
+        if (function_exists("curl_init")) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => $segundos,
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_HTTPHEADER => $cabeceras,
+                CURLOPT_POSTFIELDS => $cuerpo,
+            ]);
+            $respuesta = curl_exec($ch);
+            $estado = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+            return [$estado, $respuesta, $error];
+        }
+
+        if (!ini_get("allow_url_fopen")) {
+            return [0, false, "el servidor no tiene cURL ni allow_url_fopen activados"];
+        }
+        $contexto = stream_context_create(["http" => [
+            "method" => "POST",
+            "header" => implode("\r\n", $cabeceras),
+            "content" => $cuerpo,
+            "timeout" => $segundos,
+            "ignore_errors" => true,    //para leer la respuesta aunque sea un error (400, 401...)
+        ]]);
+        $respuesta = @file_get_contents($url, false, $contexto);
+        //la primera linea de las cabeceras de respuesta es "HTTP/1.1 201 Created"
+        $estado = isset($http_response_header[0]) && preg_match('~HTTP/\S+\s+(\d{3})~', $http_response_header[0], $m) ? (int) $m[1] : 0;
+        $error = $respuesta === false ? (error_get_last()["message"] ?? "no se pudo conectar") : "";
+        return [$estado, $respuesta, $error];
     }
 
     private static function enviarSmtp(array $config, string $para, string $nombre, string $asunto, string $html, string $texto): void {

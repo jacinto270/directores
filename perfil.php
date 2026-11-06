@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $errores["avatar"] = "No se pudo subir la imagen. Inténtalo de nuevo.";
         } else {
             //el tipo se comprueba por el contenido del archivo, no por su nombre
-            $tipo = mime_content_type($archivo["tmp_name"]);
+            $tipo = tipoImagen($archivo["tmp_name"]);
             $medidas = @getimagesize($archivo["tmp_name"]);
 
             if (!isset($permitidas[$tipo]) || !$medidas) {

@@ -1,11 +1,11 @@
 <?php
 //buzon de pruebas: muestra los correos guardados en modo "archivo" (adaptado del dev-mailbox de login-app)
-//solo para administradores y solo en modo "archivo": con "smtp" los correos se envian de verdad y aqui no hay nada
+//solo para administradores y solo en modo "archivo": con "smtp" o "brevo" los correos se envian de verdad y aqui no hay nada
 require_once __DIR__ . "/../includes/sesion.php";
 requiereAdmin("../");
 require_once __DIR__ . "/../clases/correo.php";
 
-$modoArchivo = Correo::modo() !== "smtp";
+$modoArchivo = Correo::modo() === "archivo";
 $archivos = $modoArchivo ? (glob(Correo::CARPETA_BUZON . "/*.txt") ?: []) : [];
 rsort($archivos);                        //los nombres empiezan por la fecha: los mas nuevos primero
 $archivos = array_slice($archivos, 0, 30);
@@ -34,7 +34,7 @@ require __DIR__ . "/../includes/cabecera_panel.php";
 
     <?php if (!$modoArchivo): ?>
         <div class="alerta alerta--ok formulario-ancho">
-            Los correos se están enviando de verdad por SMTP (modo <strong>smtp</strong> en <code>config.php</code>), así que aquí no se guarda ninguno.
+            Los correos se están enviando de verdad (modo <strong><?php echo htmlspecialchars(Correo::modo()); ?></strong> en <code>config.php</code>), así que aquí no se guarda ninguno. Puedes ver los envíos en el panel de tu proveedor de correo.
         </div>
     <?php elseif (!$archivos): ?>
         <div class="tarjeta vacio">Todavía no hay correos. Regístrate en el sitio público y el correo de verificación aparecerá aquí.</div>
