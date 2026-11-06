@@ -1,1 +1,3 @@
 clases/datos/config.php
+# buzon de pruebas: correos guardados en modo "archivo" (contienen enlaces de verificacion)
+clases/datos/correos/

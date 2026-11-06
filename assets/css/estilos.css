@@ -2352,3 +2352,42 @@ a.visitante__perfil:hover,
     color: inherit;
     font-weight: 600;
 }
+
+/* ---------- verificación del email ---------- */
+
+.alerta__formulario {
+    margin-top: 8px;
+}
+
+.lista-correos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 860px;
+}
+
+.correo {
+    padding: 16px 18px;
+}
+
+.correo__cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.correo__cuerpo {
+    margin: 0;
+    font-family: inherit;
+    font-size: .9rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.correo__cuerpo a {
+    font-weight: 600;
+}

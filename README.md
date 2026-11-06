@@ -31,8 +31,10 @@ Está pensada para ejecutarse en local con **XAMPP** (Apache + PHP 8.2 + MariaDB
 
 | Página | Qué hace |
 |---|---|
-| `registro.php` | Alta de una cuenta de miembro con nombre, email, teléfono y contraseña. Incluye un medidor de seguridad de la contraseña. |
-| `login.php` | Inicio de sesión con email y contraseña. |
+| `registro.php` | Alta de una cuenta de miembro con nombre, email, teléfono y contraseña. Incluye un medidor de seguridad de la contraseña. La cuenta queda **sin verificar** y se envía un enlace al email. |
+| `verificar.php` | Página del enlace del correo: activa la cuenta (o explica si el enlace ha caducado, ya se usó o no es válido). |
+| `reenviarVerificacion.php` | Envía un enlace de verificación nuevo (como mucho uno por minuto). |
+| `login.php` | Inicio de sesión con email y contraseña. Sin el email verificado no deja entrar y ofrece reenviar el enlace. |
 | `index.php` | Catálogo de películas en tarjetas (portada, género, año, director y actores), con buscador y filtros por género. |
 | `directores.php` | Fichas de los directores con biografía, nacionalidad, fecha de nacimiento y sus películas del catálogo. |
 | `perfil.php` | Datos del miembro: cambiar nombre, email (pide la contraseña actual) y teléfono, cambiar la contraseña y la foto de perfil. La foto puede ser propia o uno de los 10 avatares de personajes incluidos. |
@@ -50,6 +52,7 @@ El catálogo solo se ve con una cuenta de miembro o con la sesión del panel abi
 | `director/formDirector.php` | Crear y editar directores: nombre, nacionalidad, fecha de nacimiento y biografía (con contador de caracteres). |
 | `usuario/usuarios.php` | Solo administradores: lista de usuarios del panel, alta de usuarios con rol y eliminación. |
 | `usuario/cambiarPassword.php` | Cambiar la contraseña propia. |
+| `correos.php` | Solo administradores y solo en modo `archivo`: buzón de pruebas con los correos que la web habría enviado. |
 | `logout.php` | Cierra la sesión del panel. |
 
 Los archivos `guardar*.php` y `eliminar*.php` no son páginas: reciben los formularios, hacen el trabajo y redirigen con un aviso (`?msg=...`).
@@ -108,6 +111,8 @@ $passwordBD = "";
 ```
 
 `config.php` está en el `.gitignore`: cada persona tiene el suyo y las contraseñas no se suben al repositorio.
+
+En el mismo archivo están `$urlSitio` (la dirección de la web, para el enlace de los correos) y `$correo` (cómo se envían). Ver [Verificación del email](#verificación-del-email).
 
 ### 5. Entrar
 
@@ -208,7 +213,20 @@ Base `peliculas_bd`, motor InnoDB, codificación `utf8mb4`.
 | `telefono` | VARCHAR(20) | Sin espacios ni guiones: `+34600111222` |
 | `password` | VARCHAR(255) | Cifrada con `password_hash` |
 | `avatar` | VARCHAR(255), opcional | Archivo dentro de `img/avatares/` (o `predefinidos/robot.webp`...) |
+| `verificado` | TINYINT(1) | 1 cuando ha pulsado el enlace del correo; sin verificar no puede entrar |
+| `email_verificado_en` | DATETIME, opcional | Cuándo lo verificó |
 | `fecha_alta` | DATETIME | Se rellena sola |
+
+### `token_email` (enlaces de verificación)
+| Columna | Tipo | Notas |
+|---|---|---|
+| `id` | INT, autoincremental | |
+| `miembro_id` | INT | Se borra solo al borrar el miembro (`ON DELETE CASCADE`) |
+| `tipo` | ENUM('verificar') | |
+| `token_hash` | CHAR(64), único | **Hash SHA-256** del token: el token en claro solo va en el correo |
+| `caduca_en` | DATETIME | Por defecto, 24 h después de crearlo |
+| `usado_en` | DATETIME, opcional | Un enlace solo sirve una vez |
+| `creado_en` | DATETIME | Se rellena sola |
 
 > La película guarda el **nombre** del director, no su id. Si se cambia el nombre de un director, sus películas siguen con el nombre antiguo y dejan de aparecer en su ficha pública.
 
@@ -287,6 +305,27 @@ Los límites del panel están como constantes al principio de `includes/validaci
 
 ---
 
+## Verificación del email
+
+Adaptada del proyecto `login-app`. Al registrarse, la cuenta queda sin verificar y se envía un correo con un enlace:
+
+1. Se genera un token aleatorio de 64 caracteres (`random_bytes(32)`). En `token_email` solo se guarda su **hash SHA-256**, así que aunque alguien leyera la base de datos no podría usar los enlaces.
+2. El enlace (`verificar.php?token=...`) caduca en `horasEnlace` horas y solo sirve una vez. Cada miembro tiene como mucho un enlace pendiente: al pedir otro, el anterior deja de valer.
+3. El alta y el envío van juntos en una transacción: si el correo no se puede enviar, la cuenta no se crea.
+4. Si alguien se registra con un email que nunca verificó, se actualizan sus datos y se le envía un enlace nuevo.
+5. Reenviar el enlace responde siempre con el mismo mensaje (no revela qué emails están registrados) y como mucho envía uno por minuto.
+
+El envío lo hace `clases/correo.php` con **PHPMailer 7.1.1** (en `clases/lib/PHPMailer/`, sin necesidad de Composer). Se elige en `$correo["modo"]` de `config.php`:
+
+| Modo | Qué hace |
+|---|---|
+| `archivo` (por defecto) | No envía nada: guarda cada correo como `.txt` en `clases/datos/correos/` (bloqueada desde el navegador y fuera de git). Se leen desde el panel, en **📬 Correos** (solo administradores). |
+| `smtp` | Envía los correos de verdad. Rellena `$correo["smtp"]`. Con Gmail: `smtp.gmail.com`, puerto `587`, cifrado `tls` y una **contraseña de aplicación** (no la normal). |
+
+> Al subir la web a un servidor, cambia `$urlSitio` a la dirección real (por ejemplo `https://tudominio.com`). Si no, los enlaces de los correos apuntarán a `localhost`.
+
+---
+
 ## Pendiente y mejoras posibles
 
 **Seguridad (recomendado antes de usarlo fuera de un ordenador personal):**
@@ -297,6 +336,7 @@ Los límites del panel están como constantes al principio de `includes/validaci
 
 **Funcionalidad:**
 - Relacionar las películas con el director por `id` en lugar de por nombre.
-- Recuperar la contraseña olvidada y verificar el email (necesita un servidor de correo).
+- Recuperar la contraseña olvidada por email (se puede hacer igual que la verificación, como en `login-app`).
+- Pedir verificación de nuevo cuando un miembro cambia su email en el perfil.
 - Cambiar el rol de un usuario existente desde el panel.
 - Gestionar las cuentas de miembro desde el panel.

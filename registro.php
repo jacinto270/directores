@@ -3,6 +3,7 @@ require_once __DIR__ . "/includes/sesion.php";
 require_once __DIR__ . "/clases/miembroDAO.php";
 require_once __DIR__ . "/includes/validacion_miembro.php";
 require_once __DIR__ . "/includes/base_datos.php";
+require_once __DIR__ . "/includes/verificacion_email.php";
 
 if (hayMiembro()) {
     header("Location: index.php");
@@ -24,9 +25,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $dao = new MiembroDAO();
 
+    //si el email ya se registro pero nunca se verifico (por ejemplo, el enlace caduco),
+    //no se trata como repetido: se actualizan sus datos y se envia un enlace nuevo
+    $existente = filter_var($datos["email"], FILTER_VALIDATE_EMAIL) ? $dao->findByEmail($datos["email"]) : null;
+    $sinVerificar = $existente && !$existente->estaVerificado();
+
     $errores = array_filter([
         "nombre" => errorNombre($datos["nombre"]),
-        "email" => errorEmail($datos["email"], $dao),
+        "email" => errorEmail($datos["email"], $dao, $sinVerificar ? $existente->getId() : null),
         "telefono" => errorTelefono($telefono),
         "password" => errorPassword($password, $datos["email"]),
         "confirmar" => $password !== $confirmar ? "Las contraseñas no coinciden." : "",
@@ -34,17 +40,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (!$errores) {
         try {
-            $id = $dao->insert($datos["nombre"], $datos["email"], $telefono, $password);
-            iniciarSesionMiembro($dao->findById($id));
-            avisar("ok", "Cuenta creada. ¡Te damos la bienvenida, " . $datos["nombre"] . "!");
-            header("Location: index.php");
+            //alta y envio del correo juntos: si el correo falla, no se guarda la cuenta
+            $dao->transaccion(function (MiembroDAO $dao) use ($datos, $telefono, $password, $existente, $sinVerificar) {
+                if ($sinVerificar) {
+                    $id = $existente->getId();
+                    $dao->actualizarSinVerificar($id, $datos["nombre"], $telefono, $password);
+                } else {
+                    $id = $dao->insert($datos["nombre"], $datos["email"], $telefono, $password);
+                }
+                enviarCorreoVerificacion($dao, $id, $datos["nombre"], $datos["email"]);
+            });
+
+            //no se inicia sesion: primero tiene que confirmar el email
+            $_SESSION["registro_pendiente"] = $datos["email"];
+            header("Location: registro.php?enviado=1");
             exit;
         } catch (PDOException $e) {
-            //se queda en el formulario con lo escrito; el aviso de error se muestra abajo
             avisarErrorBD($e, "crear tu cuenta");
+        } catch (Throwable $e) {
+            //fallo al enviar el correo: el detalle va al registro de errores, no a la pantalla
+            error_log("[peliculas] registro: no se pudo enviar el correo de verificación a {$datos["email"]}: " . $e->getMessage());
+            avisar("error", "No hemos podido enviarte el correo de verificación, así que la cuenta no se ha creado. Inténtalo de nuevo en unos minutos.");
         }
     }
 }
+
+//pantalla de "revisa tu correo" tras registrarse
+$pendiente = isset($_GET["enviado"]) ? ($_SESSION["registro_pendiente"] ?? null) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -59,6 +81,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body class="acceso">
     <main class="acceso__caja acceso__caja--ancha">
+    <?php if ($pendiente): ?>
+        <div class="acceso__marca">
+            <span class="marca__icono">📬</span>
+            <h1>Revisa tu correo</h1>
+            <p>Ya casi está: solo falta confirmar tu email.</p>
+        </div>
+
+        <div class="tarjeta formulario">
+            <p>Te hemos enviado un enlace a <strong><?php echo htmlspecialchars($pendiente); ?></strong>.
+               Ábrelo para activar tu cuenta y después inicia sesión.</p>
+            <p class="campo__nota">El enlace caduca en <?php echo (int) (Correo::configuracion()["correo"]["horasEnlace"] ?? 24); ?> horas.
+               Si no lo ves, mira en la carpeta de correo no deseado.</p>
+
+            <form method="post" action="reenviarVerificacion.php">
+                <?php echo campoToken(); ?>
+                <input type="hidden" name="email" value="<?php echo htmlspecialchars($pendiente); ?>">
+                <button type="submit" class="boton boton--secundario boton--bloque">No me ha llegado: reenviar el enlace</button>
+            </form>
+        </div>
+
+        <p class="acceso__alternativa"><a href="login.php">Ir a iniciar sesión</a></p>
+    <?php else: ?>
         <div class="acceso__marca">
             <span class="marca__icono">🎬</span>
             <h1>Crea tu cuenta</h1>
@@ -106,6 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </form>
 
         <p class="acceso__alternativa">¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
+    <?php endif; ?>
     </main>
 
 <?php require __DIR__ . "/includes/aviso.php"; ?>

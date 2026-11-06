@@ -8,7 +8,10 @@ if (hayMiembro()) {
 }
 
 $error = "";
-$email = "";
+$sinVerificar = false;
+//tras verificar el email se llega aqui con el email ya escrito
+$email = $_SESSION["email_verificado"] ?? "";
+unset($_SESSION["email_verificado"]);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     verificarToken();
@@ -18,15 +21,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $miembro = (new MiembroDAO())->login($email, $password);
 
-    if ($miembro) {
+    if ($miembro && !$miembro->estaVerificado()) {
+        //contraseña correcta, pero todavia no ha confirmado el email: no puede entrar
+        $sinVerificar = true;
+    } elseif ($miembro) {
         iniciarSesionMiembro($miembro);
         header("Location: index.php");
         exit;
+    } else {
+        //pequeña espera para frenar a quien pruebe contraseñas una tras otra
+        sleep(1);
+        $error = "Email o contraseña incorrectos.";
     }
-
-    //pequeña espera para frenar a quien pruebe contraseñas una tras otra
-    sleep(1);
-    $error = "Email o contraseña incorrectos.";
 }
 
 $salida = ($_GET["msg"] ?? "") === "salida";
@@ -50,7 +56,17 @@ $salida = ($_GET["msg"] ?? "") === "salida";
             <p>Inicia sesión para ver el catálogo.</p>
         </div>
 
-        <?php if ($error): ?>
+        <?php if ($sinVerificar): ?>
+            <div class="alerta alerta--error" role="alert">
+                <strong>Aún no has confirmado tu email.</strong>
+                Abre el enlace que te enviamos al registrarte para activar la cuenta.
+                <form method="post" action="reenviarVerificacion.php" class="alerta__formulario">
+                    <?php echo campoToken(); ?>
+                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                    <button type="submit" class="boton boton--pequeno boton--secundario">Reenviar el enlace</button>
+                </form>
+            </div>
+        <?php elseif ($error): ?>
             <div class="alerta alerta--error" role="alert"><?php echo $error; ?></div>
         <?php elseif ($salida): ?>
             <div class="alerta alerta--ok" role="status">Has cerrado la sesión. ¡Hasta pronto!</div>

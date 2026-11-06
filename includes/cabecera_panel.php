@@ -30,6 +30,13 @@ $base = $base ?? "../";
             <a href="<?php echo $base; ?>panel/index.php?tab=directores" class="<?php echo $seccion === "directores" ? "activo" : ""; ?>"><span>🎬</span> Directores</a>
             <?php if (esAdmin()): ?>
                 <a href="<?php echo $base; ?>panel/usuario/usuarios.php" class="<?php echo $seccion === "usuarios" ? "activo" : ""; ?>"><span>👤</span> Usuarios</a>
+                <?php
+                    //buzon de pruebas: solo tiene sentido cuando los correos se guardan en archivos
+                    require_once __DIR__ . "/../clases/correo.php";
+                    if (Correo::modo() !== "smtp"):
+                ?>
+                    <a href="<?php echo $base; ?>panel/correos.php" class="<?php echo $seccion === "correos" ? "activo" : ""; ?>"><span>📬</span> Correos</a>
+                <?php endif; ?>
             <?php endif; ?>
         </nav>
         <a class="admin__publico" href="<?php echo $base; ?>index.php" target="_blank" title="Ver sitio público"><span class="admin__publico-texto">Ver sitio público</span> ↗</a>
